@@ -20,12 +20,9 @@ const Login = () => {
   } = useForm()
 
   const onSubmit = async (data) => {
-    try {
-      await login(data.email, data.password)
-      toast.success('Login successful!')
+    const result = await login({ email: data.email, password: data.password })
+    if (result.success) {
       navigate(from, { replace: true })
-    } catch (error) {
-      toast.error(error.message || 'Login failed')
     }
   }
 
@@ -143,7 +140,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary w-full py-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {loading ? (
                 <div className="loading-spinner h-5 w-5"></div>

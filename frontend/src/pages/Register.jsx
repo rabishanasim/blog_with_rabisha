@@ -21,19 +21,16 @@ const Register = () => {
   const password = watch('password')
 
   const onSubmit = async (data) => {
-    try {
-      await registerUser({
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        bio: data.bio
-      })
-      toast.success('Registration successful!')
+    const result = await registerUser({
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      bio: data.bio
+    })
+    if (result.success) {
       navigate('/')
-    } catch (error) {
-      toast.error(error.message || 'Registration failed')
     }
   }
 

@@ -19,19 +19,27 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200;
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-300 transform hover:scale-105 active:scale-95;
   }
 
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    @apply bg-gradient-to-r from-primary-600 to-primary-700 text-white hover:from-primary-700 hover:to-primary-800 focus:ring-primary-500 shadow-lg hover:shadow-xl;
   }
 
   .btn-secondary {
-    @apply bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500;
+    @apply bg-gradient-to-r from-secondary-500 to-secondary-600 text-white hover:from-secondary-600 hover:to-secondary-700 focus:ring-secondary-500 shadow-lg hover:shadow-xl;
+  }
+
+  .btn-accent {
+    @apply bg-gradient-to-r from-accent-500 to-accent-600 text-white hover:from-accent-600 hover:to-accent-700 focus:ring-accent-500 shadow-lg hover:shadow-xl;
   }
 
   .btn-outline {
-    @apply border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-primary-500;
+    @apply border-2 border-primary-500 text-primary-600 bg-transparent hover:bg-primary-50 focus:ring-primary-500 hover:border-primary-600;
+  }
+
+  .btn-ghost {
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500;
   }
 
   .btn-sm {
@@ -55,11 +63,23 @@
   }
 
   .card {
-    @apply bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden;
+    @apply bg-white/80 backdrop-blur-lg shadow-lg border border-gray-200/50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105;
+  }
+
+  .card-glass {
+    @apply bg-white/20 backdrop-blur-md shadow-xl border border-white/30 rounded-2xl overflow-hidden;
   }
 
   .card-body {
     @apply p-6;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent;
+  }
+
+  .hero-gradient {
+    @apply bg-gradient-to-br from-primary-50 via-white to-secondary-50;
   }
 
   .badge {

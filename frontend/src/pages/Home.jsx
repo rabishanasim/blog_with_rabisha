@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import { Link } from 'react-router-dom'
 import { Calendar, User, Eye, Heart, MessageCircle, Clock } from 'lucide-react'
@@ -7,11 +7,13 @@ import LoadingSpinner from '../components/LoadingSpinner'
 import PostCard from '../components/PostCard'
 import FeaturedPosts from '../components/FeaturedPosts'
 import CategoryList from '../components/CategoryList'
+import SearchBar from '../components/SearchBar'
+import { usePostInteraction } from '../contexts/PostInteractionContext'
 
 const Home = () => {
   const [page, setPage] = useState(1)
-  const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
+  const { initializePostStats } = usePostInteraction()
 
   // Mock data for demo when backend is not available
   const mockPosts = [
@@ -29,12 +31,11 @@ const Home = () => {
   ]
 
   const { data: postsData, isLoading, error } = useQuery(
-    ['posts', page, searchTerm, selectedCategory],
+    ['posts', page, selectedCategory],
     () => api.get('/posts', {
       params: {
         page,
         limit: 9,
-        search: searchTerm || undefined,
         category: selectedCategory || undefined,
       }
     }).then(res => res.data),
@@ -72,10 +73,12 @@ const Home = () => {
   const displayPosts = postsData?.posts || (error ? mockPosts : [])
   const displayCategories = categories || []
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    setPage(1) // Reset to first page when searching
-  }
+  // Initialize post stats when posts change
+  useEffect(() => {
+    if (displayPosts && displayPosts.length > 0) {
+      initializePostStats(displayPosts)
+    }
+  }, [displayPosts, initializePostStats])
 
   const handleCategoryChange = (categorySlug) => {
     setSelectedCategory(categorySlug)
@@ -87,31 +90,42 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-white py-16 mb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="hero-gradient py-20 mb-16 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-600/10 to-secondary-600/10"></div>
+        <div className="absolute top-10 left-10 w-72 h-72 bg-primary-300/30 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-secondary-300/30 rounded-full blur-3xl"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              Welcome to Our <span className="text-primary-600">Blog</span>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6">
+              Welcome to Our <span className="gradient-text">Blog</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl text-gray-700 mb-10 max-w-3xl mx-auto leading-relaxed">
               Discover insightful articles, tutorials, and stories from our community of writers and creators.
+              Join us on a journey of knowledge and inspiration.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <form onSubmit={handleSearch} className="flex max-w-md mx-auto">
-                <input
-                  type="text"
-                  placeholder="Search articles..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="input flex-1 rounded-r-none"
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
+              <div className="max-w-lg mx-auto shadow-xl">
+                <SearchBar 
+                  placeholder="Search amazing articles..."
+                  className="w-full"
+                  showResults={true}
+                  size="large"
                 />
-                <button
-                  type="submit"
-                  className="btn btn-primary rounded-l-none px-6"
-                >
-                  Search
-                </button>
-              </form>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link
+                to="/register"
+                className="btn btn-secondary btn-lg"
+              >
+                Join Our Community
+              </Link>
+              <Link
+                to="/create-post"
+                className="btn btn-outline btn-lg"
+              >
+                Start Writing
+              </Link>
             </div>
           </div>
         </div>
@@ -138,9 +152,9 @@ const Home = () => {
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => handleCategoryChange('')}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${!selectedCategory
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 ${!selectedCategory
+                        ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-md hover:shadow-lg'
                       }`}
                   >
                     All Posts
@@ -149,9 +163,9 @@ const Home = () => {
                     <button
                       key={category._id}
                       onClick={() => handleCategoryChange(category.slug)}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === category.slug
-                          ? 'bg-primary-600 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 ${selectedCategory === category.slug
+                          ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg'
+                          : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-md hover:shadow-lg'
                         }`}
                     >
                       {category.name} ({category.postCount})
@@ -171,23 +185,25 @@ const Home = () => {
 
               {/* Pagination */}
               {postsData?.pagination && (
-                <div className="flex justify-center items-center space-x-2 mb-8">
+                <div className="flex justify-center items-center space-x-4 mb-8">
                   <button
                     onClick={() => setPage(page - 1)}
                     disabled={!postsData.pagination.hasPrev}
-                    className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-outline disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     Previous
                   </button>
 
-                  <span className="px-4 py-2 text-gray-700">
-                    Page {postsData.pagination.current} of {postsData.pagination.total}
-                  </span>
+                  <div className="bg-white rounded-lg px-4 py-2 shadow-md">
+                    <span className="text-gray-700 font-medium">
+                      Page {postsData.pagination.current} of {postsData.pagination.total}
+                    </span>
+                  </div>
 
                   <button
                     onClick={() => setPage(page + 1)}
                     disabled={!postsData.pagination.hasNext}
-                    className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="btn btn-outline disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     Next
                   </button>
@@ -198,7 +214,7 @@ const Home = () => {
                 <div className="text-center py-12">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">No posts found</h3>
                   <p className="text-gray-600">
-                    {searchTerm ? 'Try adjusting your search terms.' : 'Backend not connected yet. Demo content coming soon!'}
+                    Backend not connected yet. Demo content coming soon!
                   </p>
                 </div>
               )}
@@ -206,33 +222,65 @@ const Home = () => {
           </main>
 
           {/* Sidebar */}
-          <aside className="lg:w-1/3">
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">About This Blog</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Welcome to our blog platform where writers share their thoughts, experiences, and expertise
-                on various topics. Join our community of readers and contributors.
-              </p>
+          <aside className="lg:w-1/3 space-y-8">
+            <div className="card">
+              <div className="p-6">
+                <h3 className="text-xl font-bold gradient-text mb-4">About This Blog</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  Welcome to our blog platform where writers share their thoughts, experiences, and expertise
+                  on various topics. Join our community of readers and contributors.
+                </p>
+                <div className="mt-6">
+                  <Link
+                    to="/register"
+                    className="btn btn-primary btn-sm w-full"
+                  >
+                    Join Community
+                  </Link>
+                </div>
+              </div>
             </div>
 
             {/* Recent Posts Sidebar */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Posts</h3>
-              <div className="space-y-4">
-                {displayPosts.slice(0, 5).map((post) => (
-                  <div key={post._id} className="border-b border-gray-200 pb-4 last:border-0">
-                    <Link
-                      to={`/post/${post.slug}`}
-                      className="text-sm font-medium text-gray-900 hover:text-primary-600 transition-colors"
-                    >
-                      {post.title}
-                    </Link>
-                    <div className="flex items-center text-xs text-gray-500 mt-2">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      {new Date(post.publishedAt).toLocaleDateString()}
+            <div className="card">
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Recent Posts</h3>
+                <div className="space-y-4">
+                  {displayPosts.slice(0, 5).map((post) => (
+                    <div key={post._id} className="group border-b border-gray-100 pb-4 last:border-0">
+                      <Link
+                        to={`/post/${post.slug}`}
+                        className="block text-sm font-medium text-gray-900 group-hover:text-primary-600 transition-colors duration-200 mb-2"
+                      >
+                        {post.title}
+                      </Link>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        {new Date(post.publishedAt).toLocaleDateString()}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Newsletter Signup */}
+            <div className="card-glass">
+              <div className="p-6 text-center">
+                <h3 className="text-xl font-bold text-white mb-4">Stay Updated</h3>
+                <p className="text-white/80 text-sm mb-4">
+                  Subscribe to get the latest articles delivered to your inbox.
+                </p>
+                <div className="space-y-3">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="input w-full bg-white/20 border-white/30 placeholder-white/60 text-white"
+                  />
+                  <button className="btn btn-primary w-full">
+                    Subscribe
+                  </button>
+                </div>
               </div>
             </div>
           </aside>
