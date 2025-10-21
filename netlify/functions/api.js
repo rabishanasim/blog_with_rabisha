@@ -1,10 +1,8 @@
-const mongoose = require('mongoose')
-
-// Simple health check function
+// Simple health check function without MongoDB for now
 exports.handler = async (event, context) => {
   // Set CORS headers
   const headers = {
-    'Access-Control-Allow-Origin': process.env.FRONTEND_URL || 'https://blog-with-rabisha2025.vercel.app',
+    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Content-Type': 'application/json'
@@ -20,33 +18,17 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Connect to MongoDB if not connected
-    if (mongoose.connection.readyState !== 1) {
-      await mongoose.connect(process.env.MONGODB_URI)
-    }
-
     // Health check endpoint
-    if (event.path === '/api/health' || event.path.endsWith('/health')) {
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          status: 'OK',
-          message: 'Blog Platform API is running',
-          timestamp: new Date().toISOString(),
-          mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
-        })
-      }
-    }
-
-    // Basic API response for other endpoints
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        message: 'Blog Platform API',
-        endpoints: ['/api/health'],
-        status: 'Working'
+        status: 'OK',
+        message: 'Blog Platform API is running on Netlify',
+        timestamp: new Date().toISOString(),
+        path: event.path,
+        method: event.httpMethod,
+        environment: 'netlify-functions'
       })
     }
 

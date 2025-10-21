@@ -6,9 +6,7 @@
   "scripts": {
     "build": "echo 'Build complete'"
   },
-  "dependencies": {
-    "mongoose": "^7.5.0"
-  },
+  "dependencies": {},
   "engines": {
     "node": ">=18.0.0"
   }
