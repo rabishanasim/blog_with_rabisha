@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // Create axios instance with dynamic base URL
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://rabishablog.netlify.app/.netlify/functions',
   headers: {
     'Content-Type': 'application/json',
   },
