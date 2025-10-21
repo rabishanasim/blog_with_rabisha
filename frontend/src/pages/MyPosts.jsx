@@ -1,45 +1,39 @@
-import React from 'react'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Edit3, Trash2, Plus, Eye } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { Edit3, Trash2, Plus, Eye, BarChart } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
-import api from '../utils/api'
+import { usePost } from '../contexts/PostContext'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 const MyPosts = () => {
   const { user } = useAuth()
-  const queryClient = useQueryClient()
+  const { getUserPosts, deletePost, isLoading: postLoading } = usePost()
+  const [posts, setPosts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const { data: posts, isLoading, error } = useQuery(
-    ['my-posts'],
-    async () => {
-      const response = await api.get(`/posts?author=${user.id}&status=all`)
-      return response.data.posts
+  useEffect(() => {
+    if (user) {
+      setIsLoading(true)
+      // Get all posts by the user (drafts and published)
+      const userPosts = getUserPosts(user.id)
+      setPosts(userPosts)
+      setIsLoading(false)
     }
-  )
+  }, [user, getUserPosts])
 
-  const deletePostMutation = useMutation(
-    (postId) => api.delete(`/posts/${postId}`),
-    {
-      onSuccess: () => {
-        toast.success('Post deleted successfully!')
-        queryClient.invalidateQueries(['my-posts'])
-      },
-      onError: (error) => {
-        toast.error(error.response?.data?.message || 'Failed to delete post')
-      }
-    }
-  )
-
-  const handleDelete = (postId) => {
+  const handleDelete = async (postId) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
-      deletePostMutation.mutate(postId)
+      const result = await deletePost(postId)
+      if (result.success) {
+        // Refresh the posts list
+        const userPosts = getUserPosts(user.id)
+        setPosts(userPosts)
+      }
     }
   }
 
   if (isLoading) return <LoadingSpinner />
-  if (error) return <div className="text-center text-red-600">Error loading posts</div>
+  if (!user) return <div className="text-center text-red-600">Please login to view your posts</div>
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -54,7 +48,7 @@ const MyPosts = () => {
           </div>
           <Link
             to="/create-post"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+            className="btn btn-primary inline-flex items-center"
           >
             <Plus className="w-5 h-5 mr-2" />
             Create New Post
@@ -63,32 +57,60 @@ const MyPosts = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-2xl font-bold text-gray-900">{posts?.length || 0}</div>
-            <div className="text-sm text-gray-600">Total Posts</div>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-2xl font-bold text-green-600">
-              {posts?.filter(p => p.status === 'published').length || 0}
+          <div className="card">
+            <div className="p-6">
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <div className="text-2xl font-bold text-gray-900">{posts?.length || 0}</div>
+                  <div className="text-sm text-gray-600">Total Posts</div>
+                </div>
+                <BarChart className="h-8 w-8 text-primary-600" />
+              </div>
             </div>
-            <div className="text-sm text-gray-600">Published</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-2xl font-bold text-yellow-600">
-              {posts?.filter(p => p.status === 'draft').length || 0}
+          <div className="card">
+            <div className="p-6">
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <div className="text-2xl font-bold text-green-600">
+                    {posts?.filter(p => p.status === 'published').length || 0}
+                  </div>
+                  <div className="text-sm text-gray-600">Published</div>
+                </div>
+                <Eye className="h-8 w-8 text-green-600" />
+              </div>
             </div>
-            <div className="text-sm text-gray-600">Drafts</div>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-2xl font-bold text-blue-600">
-              {posts?.reduce((total, post) => total + (post.views || 0), 0) || 0}
+          <div className="card">
+            <div className="p-6">
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <div className="text-2xl font-bold text-yellow-600">
+                    {posts?.filter(p => p.status === 'draft').length || 0}
+                  </div>
+                  <div className="text-sm text-gray-600">Drafts</div>
+                </div>
+                <Edit3 className="h-8 w-8 text-yellow-600" />
+              </div>
             </div>
-            <div className="text-sm text-gray-600">Total Views</div>
+          </div>
+          <div className="card">
+            <div className="p-6">
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {posts?.reduce((total, post) => total + (post.views || 0), 0) || 0}
+                  </div>
+                  <div className="text-sm text-gray-600">Total Views</div>
+                </div>
+                <BarChart className="h-8 w-8 text-blue-600" />
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Posts List */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="card overflow-hidden">
           {posts && posts.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
@@ -155,8 +177,8 @@ const MyPosts = () => {
                           </Link>
                           <button
                             onClick={() => handleDelete(post._id)}
-                            className="text-red-600 hover:text-red-900"
-                            disabled={deletePostMutation.isLoading}
+                            className="text-red-600 hover:text-red-900 transition-colors"
+                            disabled={postLoading}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -172,7 +194,7 @@ const MyPosts = () => {
               <div className="text-gray-500 mb-4">No posts found</div>
               <Link
                 to="/create-post"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                className="btn btn-primary inline-flex items-center"
               >
                 <Plus className="w-5 h-5 mr-2" />
                 Create Your First Post

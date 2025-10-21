@@ -8,6 +8,7 @@ import './index.css'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import { SearchProvider } from './contexts/SearchContext.jsx'
 import { PostInteractionProvider } from './contexts/PostInteractionContext.jsx'
+import { PostProvider } from './contexts/PostContext.jsx'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -25,25 +26,27 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <AuthProvider>
           <SearchProvider>
-            <PostInteractionProvider>
-              <App />
-              <Toaster 
-                position="top-right"
-                toastOptions={{
-                  duration: 4000,
-                  style: {
-                    background: '#363636',
-                    color: '#fff',
-                  },
-                  success: {
-                    duration: 3000,
-                  },
-                  error: {
-                    duration: 5000,
-                  },
-                }}
-              />
-            </PostInteractionProvider>
+            <PostProvider>
+              <PostInteractionProvider>
+                <App />
+                <Toaster 
+                  position="top-right"
+                  toastOptions={{
+                    duration: 4000,
+                    style: {
+                      background: '#363636',
+                      color: '#fff',
+                    },
+                    success: {
+                      duration: 3000,
+                    },
+                    error: {
+                      duration: 5000,
+                    },
+                  }}
+                />
+              </PostInteractionProvider>
+            </PostProvider>
           </SearchProvider>
         </AuthProvider>
       </BrowserRouter>

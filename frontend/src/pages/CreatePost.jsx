@@ -1,21 +1,20 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQueryClient } from 'react-query'
 import { useNavigate } from 'react-router-dom'
-import { Save, Upload, Eye } from 'lucide-react'
-import toast from 'react-hot-toast'
-import api from '../utils/api'
+import { Save, Upload, Eye, Image } from 'lucide-react'
+import { usePost } from '../contexts/PostContext'
 
 const CreatePost = () => {
   const [preview, setPreview] = useState(false)
   const [imagePreview, setImagePreview] = useState('')
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
+  const { createPost, isLoading } = usePost()
 
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors }
   } = useForm({
     defaultValues: {
@@ -26,41 +25,25 @@ const CreatePost = () => {
 
   const watchContent = watch('content', '')
 
-  const createPostMutation = useMutation(
-    (formData) => api.post('/posts', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      }
-    }),
-    {
-      onSuccess: (data) => {
-        toast.success('Post created successfully!')
-        queryClient.invalidateQueries('posts')
-        queryClient.invalidateQueries('my-posts')
-        navigate('/my-posts')
-      },
-      onError: (error) => {
-        toast.error(error.response?.data?.message || 'Failed to create post')
-      }
-    }
-  )
-
-  const onSubmit = (data) => {
-    const formData = new FormData()
-    
-    // Append text fields
-    Object.keys(data).forEach(key => {
-      if (key !== 'featuredImage') {
-        formData.append(key, data[key])
-      }
-    })
-
-    // Append file if selected
-    if (data.featuredImage && data.featuredImage[0]) {
-      formData.append('featuredImage', data.featuredImage[0])
+  const onSubmit = async (data) => {
+    // Prepare post data
+    const postData = {
+      title: data.title,
+      excerpt: data.excerpt,
+      content: data.content,
+      tags: data.tags,
+      category: data.category,
+      status: data.status,
+      featured: data.featured,
+      featuredImageUrl: imagePreview // Use the preview URL for now
     }
 
-    createPostMutation.mutate(formData)
+    const result = await createPost(postData)
+    if (result.success) {
+      reset()
+      setImagePreview('')
+      navigate('/my-posts')
+    }
   }
 
   const handleImageChange = (e) => {
@@ -136,20 +119,31 @@ const CreatePost = () => {
               <label htmlFor="featuredImage" className="block text-sm font-medium text-gray-700 mb-2">
                 Featured Image
               </label>
-              <input
-                id="featuredImage"
-                type="file"
-                accept="image/*"
-                className="input"
-                {...register('featuredImage')}
-                onChange={handleImageChange}
-              />
+              <div className="space-y-3">
+                <input
+                  id="featuredImage"
+                  type="file"
+                  accept="image/*"
+                  className="input"
+                  onChange={handleImageChange}
+                />
+                <div className="text-sm text-gray-500">
+                  Or use a URL for the featured image:
+                </div>
+                <input
+                  type="url"
+                  placeholder="https://example.com/image.jpg"
+                  className="input"
+                  onChange={(e) => setImagePreview(e.target.value)}
+                />
+              </div>
               {imagePreview && (
                 <div className="mt-4">
                   <img
                     src={imagePreview}
                     alt="Preview"
                     className="h-48 w-full object-cover rounded-lg"
+                    onError={() => setImagePreview('')}
                   />
                 </div>
               )}
@@ -225,7 +219,11 @@ const CreatePost = () => {
                   {...register('category')}
                 >
                   <option value="">Select a category (optional)</option>
-                  <option value="">No Category</option>
+                  <option value="technology">Technology</option>
+                  <option value="lifestyle">Lifestyle</option>
+                  <option value="travel">Travel</option>
+                  <option value="food">Food</option>
+                  <option value="business">Business</option>
                 </select>
               </div>
 
@@ -270,10 +268,10 @@ const CreatePost = () => {
             </button>
             <button
               type="submit"
-              disabled={createPostMutation.isLoading}
-              className="btn btn-primary"
+              disabled={isLoading}
+              className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
-              {createPostMutation.isLoading ? (
+              {isLoading ? (
                 <div className="loading-spinner h-5 w-5 mr-2"></div>
               ) : (
                 <Save className="h-5 w-5 mr-2" />

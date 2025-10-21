@@ -1,77 +1,61 @@
 import React, { useState, useEffect } from 'react'
-import { useQuery } from 'react-query'
 import { Link } from 'react-router-dom'
 import { Calendar, User, Eye, Heart, MessageCircle, Clock } from 'lucide-react'
-import api from '../utils/api'
 import LoadingSpinner from '../components/LoadingSpinner'
 import PostCard from '../components/PostCard'
 import FeaturedPosts from '../components/FeaturedPosts'
 import CategoryList from '../components/CategoryList'
 import SearchBar from '../components/SearchBar'
 import { usePostInteraction } from '../contexts/PostInteractionContext'
+import { usePost } from '../contexts/PostContext'
 
 const Home = () => {
   const [page, setPage] = useState(1)
   const [selectedCategory, setSelectedCategory] = useState('')
+  const [postsData, setPostsData] = useState(null)
+  const [featuredPosts, setFeaturedPosts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
   const { initializePostStats } = usePostInteraction()
+  const { getPosts } = usePost()
 
-  // Mock data for demo when backend is not available
-  const mockPosts = [
-    {
-      _id: '1',
-      title: 'Welcome to Your Blog Platform',
-      excerpt: 'This is a demo post showing how your blog will look when it\'s fully connected to the backend.',
-      slug: 'welcome-to-blog',
-      author: { firstName: 'Demo', lastName: 'User' },
-      publishedAt: new Date().toISOString(),
-      views: 0,
-      likes: 0,
-      comments: 0
-    }
+  // Mock categories
+  const displayCategories = [
+    { _id: 'tech', name: 'Technology', slug: 'technology', postCount: 12 },
+    { _id: 'lifestyle', name: 'Lifestyle', slug: 'lifestyle', postCount: 8 },
+    { _id: 'travel', name: 'Travel', slug: 'travel', postCount: 6 },
+    { _id: 'food', name: 'Food', slug: 'food', postCount: 4 },
+    { _id: 'business', name: 'Business', slug: 'business', postCount: 10 }
   ]
 
-  const { data: postsData, isLoading, error } = useQuery(
-    ['posts', page, selectedCategory],
-    () => api.get('/posts', {
-      params: {
+  // Fetch posts using PostContext
+  useEffect(() => {
+    setIsLoading(true)
+    
+    // Simulate loading delay
+    setTimeout(() => {
+      const result = getPosts({
         page,
         limit: 9,
-        category: selectedCategory || undefined,
-      }
-    }).then(res => res.data),
-    {
-      keepPreviousData: true,
-      retry: false,
-      refetchOnWindowFocus: false,
-      onError: () => {
-        // Fallback to mock data when API fails
-      }
-    }
-  )
+        status: 'published',
+        category: selectedCategory || null
+      })
+      
+      setPostsData(result)
+      
+      // Get featured posts
+      const featured = getPosts({
+        page: 1,
+        limit: 3,
+        status: 'published',
+        featured: true
+      })
+      setFeaturedPosts(featured.posts)
+      
+      setIsLoading(false)
+    }, 500)
+  }, [page, selectedCategory, getPosts])
 
-  const { data: featuredPosts } = useQuery(
-    'featured-posts',
-    () => api.get('/posts/featured').then(res => res.data),
-    {
-      staleTime: 5 * 60 * 1000,
-      retry: false,
-      refetchOnWindowFocus: false
-    }
-  )
-
-  const { data: categories } = useQuery(
-    'categories',
-    () => api.get('/categories').then(res => res.data),
-    {
-      staleTime: 10 * 60 * 1000,
-      retry: false,
-      refetchOnWindowFocus: false
-    }
-  )
-
-  // Use mock data if API calls fail
-  const displayPosts = postsData?.posts || (error ? mockPosts : [])
-  const displayCategories = categories || []
+  const displayPosts = postsData?.posts || []
 
   // Initialize post stats when posts change
   useEffect(() => {
