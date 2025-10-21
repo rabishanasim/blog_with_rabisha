@@ -127,6 +127,8 @@ Personal-Blog-Platform/
 
 **Happy Blogging! 🎉**
 
+> Last updated: October 22, 2025
+
 ## Features
 
 - 📝 Create, edit, and delete blog posts
