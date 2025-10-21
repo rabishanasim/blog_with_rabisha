@@ -1,51 +1,64 @@
-const express = require('express')
-const cors = require('cors')
 const mongoose = require('mongoose')
-const serverless = require('serverless-http')
 
-// Import routes
-const authRoutes = require('../../backend/routes/auth')
-const postRoutes = require('../../backend/routes/posts')
-const userRoutes = require('../../backend/routes/users')
-const categoryRoutes = require('../../backend/routes/categories')
-const commentRoutes = require('../../backend/routes/comments')
+// Simple health check function
+exports.handler = async (event, context) => {
+  // Set CORS headers
+  const headers = {
+    'Access-Control-Allow-Origin': process.env.FRONTEND_URL || 'https://blog-with-rabisha2025.vercel.app',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Content-Type': 'application/json'
+  }
 
-const app = express()
+  // Handle OPTIONS requests for CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers,
+      body: ''
+    }
+  }
 
-// Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://blog-with-rabisha2025.vercel.app',
-  credentials: true
-}))
-app.use(express.json({ limit: '10mb' }))
-app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+  try {
+    // Connect to MongoDB if not connected
+    if (mongoose.connection.readyState !== 1) {
+      await mongoose.connect(process.env.MONGODB_URI)
+    }
 
-// Connect to MongoDB
-if (!mongoose.connections[0].readyState) {
-  mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/blogplatform')
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err))
+    // Health check endpoint
+    if (event.path === '/api/health' || event.path.endsWith('/health')) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          status: 'OK',
+          message: 'Blog Platform API is running',
+          timestamp: new Date().toISOString(),
+          mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+        })
+      }
+    }
+
+    // Basic API response for other endpoints
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        message: 'Blog Platform API',
+        endpoints: ['/api/health'],
+        status: 'Working'
+      })
+    }
+
+  } catch (error) {
+    console.error('Function error:', error)
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
+        error: 'Internal server error',
+        message: error.message
+      })
+    }
+  }
 }
-
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK',
-    message: 'Blog Platform API is running',
-    timestamp: new Date().toISOString()
-  })
-})
-
-// Routes
-app.use('/auth', authRoutes)
-app.use('/posts', postRoutes)
-app.use('/users', userRoutes)
-app.use('/categories', categoryRoutes)
-app.use('/comments', commentRoutes)
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'API endpoint not found' })
-})
-
-module.exports.handler = serverless(app)
