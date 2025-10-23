@@ -36,4 +36,40 @@ api.interceptors.response.use(
   }
 )
 
+// Admin Settings API functions
+export const adminAPI = {
+  // Get admin settings (public)
+  getSettings: async () => {
+    try {
+      const response = await api.get('/admin/settings')
+      return response.data
+    } catch (error) {
+      console.error('Failed to fetch admin settings:', error)
+      throw error
+    }
+  },
+
+  // Update admin settings (admin only)
+  updateSettings: async (settingsData) => {
+    try {
+      const response = await api.put('/admin/settings', settingsData)
+      return response.data
+    } catch (error) {
+      console.error('Failed to update admin settings:', error)
+      throw error
+    }
+  },
+
+  // Reset admin settings to defaults (admin only)
+  resetSettings: async () => {
+    try {
+      const response = await api.post('/admin/settings/reset')
+      return response.data
+    } catch (error) {
+      console.error('Failed to reset admin settings:', error)
+      throw error
+    }
+  }
+}
+
 export default api

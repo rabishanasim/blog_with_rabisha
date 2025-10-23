@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
-import { Save, Upload, User, Mail, MapPin, Globe, Phone, Camera } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { Save, Upload, User, Mail, MapPin, Globe, Phone, Camera, RefreshCw } from 'lucide-react'
+import { adminAPI } from '../utils/api'
 
 const AdminSettings = () => {
   const [adminSettings, setAdminSettings] = useState({
     // Personal Information
-    firstName: 'Rabisha',
-    lastName: 'Nasim',
-    title: 'Blog Admin & Content Creator',
-    bio: 'Welcome to my blog! I\'m passionate about sharing knowledge and connecting with like-minded individuals. This platform is where I share my thoughts, experiences, and insights on various topics.',
+    firstName: '',
+    lastName: '',
+    title: '',
+    bio: '',
     
     // Contact Information
-    email: 'admin@yourdomain.com',
+    email: '',
     phone: '',
-    location: 'Your City, Country',
+    location: '',
     website: '',
     
     // Social Media (optional)
@@ -22,16 +23,59 @@ const AdminSettings = () => {
     instagram: '',
     
     // Blog Settings
-    blogTitle: 'My Personal Blog',
-    blogSubtitle: 'Sharing knowledge and experiences',
-    blogDescription: 'A place where I share my thoughts, insights, and experiences on various topics that matter to me.',
+    blogTitle: '',
+    blogSubtitle: '',
+    blogDescription: '',
     
     // Profile Image
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200'
+    avatarUrl: '',
+    
+    // Skills
+    skills: []
   })
 
+  const [loading, setLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState(null)
+
+  // Load settings on component mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        setLoading(true)
+        const settings = await adminAPI.getSettings()
+        
+        // Transform backend data to form structure
+        setAdminSettings({
+          firstName: settings.firstName || '',
+          lastName: settings.lastName || '',
+          title: settings.title || '',
+          bio: settings.bio || '',
+          email: settings.email || '',
+          phone: settings.phone || '',
+          location: settings.location || '',
+          website: settings.website || '',
+          twitter: settings.socialMedia?.twitter || '',
+          linkedin: settings.socialMedia?.linkedin || '',
+          github: settings.socialMedia?.github || '',
+          instagram: settings.socialMedia?.instagram || '',
+          blogTitle: settings.blogTitle || '',
+          blogSubtitle: settings.blogSubtitle || '',
+          blogDescription: settings.blogDescription || '',
+          avatarUrl: settings.avatarUrl || '',
+          skills: settings.skills || []
+        })
+      } catch (err) {
+        console.error('Failed to load admin settings:', err)
+        setError('Failed to load settings. Please try again.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadSettings()
+  }, [])
 
   const handleInputChange = (e) => {
     setAdminSettings({
@@ -43,16 +87,65 @@ const AdminSettings = () => {
   const handleSave = async (e) => {
     e.preventDefault()
     setIsSaving(true)
+    setError(null)
     
-    // Save to localStorage for now (you can integrate with backend later)
-    localStorage.setItem('admin_settings', JSON.stringify(adminSettings))
-    
-    // Simulate save delay
-    setTimeout(() => {
-      setIsSaving(false)
+    try {
+      // Transform form data to backend format
+      const settingsData = {
+        firstName: adminSettings.firstName,
+        lastName: adminSettings.lastName,
+        title: adminSettings.title,
+        bio: adminSettings.bio,
+        email: adminSettings.email,
+        phone: adminSettings.phone,
+        location: adminSettings.location,
+        website: adminSettings.website,
+        socialMedia: {
+          twitter: adminSettings.twitter,
+          linkedin: adminSettings.linkedin,
+          github: adminSettings.github,
+          instagram: adminSettings.instagram
+        },
+        blogTitle: adminSettings.blogTitle,
+        blogSubtitle: adminSettings.blogSubtitle,
+        blogDescription: adminSettings.blogDescription,
+        avatarUrl: adminSettings.avatarUrl,
+        skills: adminSettings.skills.filter(skill => skill.trim()) // Remove empty skills
+      }
+
+      await adminAPI.updateSettings(settingsData)
+      
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
-    }, 1000)
+    } catch (err) {
+      console.error('Failed to save settings:', err)
+      setError(err.response?.data?.message || 'Failed to save settings. Please try again.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  // Handle skills as comma-separated string
+  const handleSkillsChange = (e) => {
+    const skillsString = e.target.value
+    const skillsArray = skillsString.split(',').map(skill => skill.trim()).filter(Boolean)
+    setAdminSettings({
+      ...adminSettings,
+      skills: skillsArray
+    })
+  }
+
+  const skillsString = adminSettings.skills.join(', ')
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading admin settings...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -65,6 +158,16 @@ const AdminSettings = () => {
             Customize your profile and blog information. This will be displayed across your blog platform.
           </p>
         </div>
+
+        {/* Error Alert */}
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-center">
+              <div className="w-4 h-4 bg-red-500 rounded-full mr-3"></div>
+              <p className="text-red-800 font-medium">{error}</p>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSave} className="space-y-8">
           {/* Personal Information */}
@@ -157,6 +260,22 @@ const AdminSettings = () => {
                   className="textarea w-full"
                   placeholder="Tell visitors about yourself..."
                 />
+              </div>
+
+              <div className="mt-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Skills / Expertise
+                </label>
+                <input
+                  type="text"
+                  value={skillsString}
+                  onChange={handleSkillsChange}
+                  className="input w-full"
+                  placeholder="e.g., Content Writing, Blog Management, Community Building"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Separate skills with commas
+                </p>
               </div>
             </div>
           </div>

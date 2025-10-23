@@ -10,6 +10,7 @@ const postRoutes = require('./routes/posts');
 const userRoutes = require('./routes/users');
 const commentRoutes = require('./routes/comments');
 const categoryRoutes = require('./routes/categories');
+const adminRoutes = require('./routes/admin');
 
 // Load environment variables
 dotenv.config();
@@ -44,6 +45,7 @@ app.use('/api/posts', postRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

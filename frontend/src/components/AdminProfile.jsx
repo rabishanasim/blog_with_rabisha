@@ -1,23 +1,88 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Mail, MapPin, Calendar, Award, BookOpen, Users } from 'lucide-react'
+import { adminAPI } from '../utils/api'
 
 const AdminProfile = ({ variant = 'default', showStats = false }) => {
-  // Admin information - you can update these with your real details
-  const adminInfo = {
-    name: 'Rabisha Nasim',
-    title: 'Blog Admin & Content Creator',
-    bio: 'Welcome to my blog! I\'m passionate about sharing knowledge and connecting with like-minded individuals. This platform is where I share my thoughts, experiences, and insights on various topics.',
-    email: 'admin@yourdomain.com', // Update with your real email
-    location: 'Your City, Country', // Update with your location
-    joinDate: 'October 2025', // Update with when you started
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200', // Replace with your photo
-    skills: ['Content Writing', 'Blog Management', 'Community Building', 'Digital Marketing'],
-    stats: {
-      posts: '0', // This will be updated dynamically
-      followers: '0', // This will grow as your blog grows
-      views: '0', // Total blog views
-      experience: '1+' // Years of experience
+  const [adminInfo, setAdminInfo] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // Fetch admin settings from backend
+  useEffect(() => {
+    const fetchAdminInfo = async () => {
+      try {
+        const settings = await adminAPI.getSettings()
+        
+        // Transform backend data to match component needs
+        const adminData = {
+          name: settings.fullName || `${settings.firstName} ${settings.lastName}`,
+          title: settings.title || 'Blog Admin & Content Creator',
+          bio: settings.bio || 'Welcome to my blog!',
+          email: settings.email || 'admin@example.com',
+          location: settings.location || 'Unknown Location',
+          joinDate: new Date(settings.joinDate).toLocaleDateString('en-US', { 
+            month: 'long', 
+            year: 'numeric' 
+          }),
+          avatar: settings.avatarUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
+          skills: settings.skills || ['Content Writing', 'Blog Management'],
+          stats: {
+            posts: '0', // This will be updated dynamically
+            followers: '0', // This will grow as your blog grows
+            views: '0', // Total blog views
+            experience: Math.max(1, new Date().getFullYear() - new Date(settings.joinDate).getFullYear()) + '+' // Calculate years
+          }
+        }
+        
+        setAdminInfo(adminData)
+      } catch (err) {
+        console.error('Failed to load admin info:', err)
+        setError('Failed to load admin information')
+        
+        // Fallback to default data if backend fails
+        setAdminInfo({
+          name: 'Blog Admin',
+          title: 'Blog Admin & Content Creator',
+          bio: 'Welcome to my blog!',
+          email: 'admin@example.com',
+          location: 'Unknown Location',
+          joinDate: 'Recent',
+          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
+          skills: ['Content Writing', 'Blog Management'],
+          stats: {
+            posts: '0',
+            followers: '0',
+            views: '0',
+            experience: '1+'
+          }
+        })
+      } finally {
+        setLoading(false)
+      }
     }
+
+    fetchAdminInfo()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="card">
+        <div className="p-6 text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading admin profile...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="card">
+        <div className="p-6 text-center">
+          <p className="text-red-500 text-sm">{error}</p>
+        </div>
+      </div>
+    )
   }
 
   if (variant === 'compact') {
