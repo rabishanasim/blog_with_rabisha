@@ -6,6 +6,7 @@ import PostCard from '../components/PostCard'
 import FeaturedPosts from '../components/FeaturedPosts'
 import CategoryList from '../components/CategoryList'
 import SearchBar from '../components/SearchBar'
+import AdminProfile from '../components/AdminProfile'
 import { usePostInteraction } from '../contexts/PostInteractionContext'
 import { usePost } from '../contexts/PostContext'
 
@@ -220,12 +221,15 @@ const Home = () => {
 
           {/* Sidebar */}
           <aside className="lg:w-1/3 space-y-8">
+            {/* Admin Profile */}
+            <AdminProfile showStats={true} />
+            
             <div className="card">
               <div className="p-6">
                 <h3 className="text-xl font-bold gradient-text mb-4">About This Blog</h3>
                 <p className="text-gray-600 leading-relaxed">
-                  Welcome to our blog platform where writers share their thoughts, experiences, and expertise
-                  on various topics. Join our community of readers and contributors.
+                  Welcome to my personal blog where I share my thoughts, experiences, and expertise
+                  on various topics. Join me on this journey of learning and discovery.
                 </p>
                 <div className="mt-6">
                   <Link

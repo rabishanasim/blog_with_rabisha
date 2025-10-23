@@ -33,23 +33,23 @@ const Contact = () => {
   const contactMethods = [
     {
       icon: Mail,
-      title: 'Email Us',
-      description: 'Send us an email and we\'ll respond within 24 hours',
-      contact: 'hello@blogplatform.com',
-      action: 'mailto:hello@blogplatform.com'
+      title: 'Email Me',
+      description: 'Send me an email and I\'ll respond as soon as possible',
+      contact: 'admin@yourdomain.com', // Update with your real email
+      action: 'mailto:admin@yourdomain.com'
     },
     {
       icon: Phone,
-      title: 'Call Us',
-      description: 'Speak with our team during business hours',
-      contact: '+1 (555) 123-4567',
-      action: 'tel:+15551234567'
+      title: 'Call Me',
+      description: 'Reach out during business hours',
+      contact: 'Available upon request', // Update with your phone if you want
+      action: '#'
     },
     {
       icon: MapPin,
-      title: 'Visit Us',
-      description: 'Come say hello at our office',
-      contact: '123 Blog Street, Content City, CC 12345',
+      title: 'Location',
+      description: 'Currently based in',
+      contact: 'Your City, Country', // Update with your location
       action: '#'
     }
   ]
@@ -106,7 +106,8 @@ const Contact = () => {
             Get In <span className="gradient-text">Touch</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            I'd love to hear from you! Whether you have questions, feedback, or just want to connect,
+            feel free to reach out.
           </p>
         </div>
       </section>

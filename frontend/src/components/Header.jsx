@@ -120,14 +120,24 @@ const Header = () => {
                       </Link>
                       
                       {isAdmin && (
-                        <Link
-                          to="/dashboard"
-                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                          onClick={() => setIsUserMenuOpen(false)}
-                        >
-                          <Settings className="h-4 w-4 mr-2" />
-                          Dashboard
-                        </Link>
+                        <>
+                          <Link
+                            to="/dashboard"
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <Settings className="h-4 w-4 mr-2" />
+                            Dashboard
+                          </Link>
+                          <Link
+                            to="/admin/settings"
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <User className="h-4 w-4 mr-2" />
+                            Admin Settings
+                          </Link>
+                        </>
                       )}
                       
                       <button
@@ -226,13 +236,22 @@ const Header = () => {
                     Profile
                   </Link>
                   {isAdmin && (
-                    <Link
-                      to="/dashboard"
-                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-md"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Dashboard
-                    </Link>
+                    <>
+                      <Link
+                        to="/dashboard"
+                        className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-md"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                      <Link
+                        to="/admin/settings"
+                        className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-md"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Admin Settings
+                      </Link>
+                    </>
                   )}
                   <button
                     onClick={handleLogout}

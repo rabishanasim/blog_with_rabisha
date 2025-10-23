@@ -15,6 +15,7 @@ import CreatePost from './pages/CreatePost'
 import EditPost from './pages/EditPost'
 import Profile from './pages/Profile'
 import MyPosts from './pages/MyPosts'
+import AdminSettings from './pages/AdminSettings'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -64,6 +65,11 @@ function App() {
         <Route path="/dashboard/posts/edit/:id" element={
           <ProtectedRoute adminOnly>
             <EditPost />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/settings" element={
+          <ProtectedRoute adminOnly>
+            <AdminSettings />
           </ProtectedRoute>
         } />
         <Route path="*" element={<NotFound />} />

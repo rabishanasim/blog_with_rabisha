@@ -27,23 +27,12 @@ const About = () => {
 
   const team = [
     {
-      name: 'Sarah Johnson',
-      role: 'Founder & Editor-in-Chief',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b27c?w=150',
-      bio: 'Passionate about technology and education with 10+ years of writing experience.'
-    },
-    {
-      name: 'Mike Chen',
-      role: 'Lead Developer',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
-      bio: 'Full-stack developer who loves building amazing user experiences.'
-    },
-    {
-      name: 'Emily Davis',
-      role: 'Content Manager',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
-      bio: 'Expert in content strategy and community building.'
+      name: 'Rabisha Nasim', // You can update this with your full name
+      role: 'Founder & Admin',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', // You can replace with your photo
+      bio: 'Blog platform creator and administrator. Passionate about sharing knowledge and building communities through technology.'
     }
+    // Add more team members here as your blog grows
   ]
 
   return (
@@ -52,11 +41,11 @@ const About = () => {
       <section className="hero-gradient py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            About <span className="gradient-text">Our Blog</span>
+            About <span className="gradient-text">My Blog</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            We're passionate about sharing knowledge, fostering learning, and building a community 
-            where ideas flourish and grow.
+            Welcome to my personal blog platform! I'm passionate about sharing knowledge, 
+            experiences, and insights to help others learn and grow.
           </p>
         </div>
       </section>
@@ -65,10 +54,10 @@ const About = () => {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">My Mission</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              To democratize knowledge sharing and create a platform where everyone can learn, 
-              contribute, and grow together in their professional and personal journeys.
+              To create valuable content that helps others learn, grow, and succeed. 
+              This blog is my space to share insights, experiences, and knowledge with the world.
             </p>
           </div>
 
