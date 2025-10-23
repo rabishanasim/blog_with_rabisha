@@ -7,11 +7,10 @@ const CategoryList = ({ categories, selectedCategory, onCategoryChange }) => {
     <div className="flex flex-wrap gap-2 mb-6">
       <button
         onClick={() => onCategoryChange('')}
-        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-          !selectedCategory
+        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${!selectedCategory
             ? 'bg-primary-600 text-white'
             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-        }`}
+          }`}
       >
         All Categories
       </button>
@@ -19,11 +18,10 @@ const CategoryList = ({ categories, selectedCategory, onCategoryChange }) => {
         <button
           key={category._id}
           onClick={() => onCategoryChange(category.slug)}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            selectedCategory === category.slug
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === category.slug
               ? 'bg-primary-600 text-white'
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
+            }`}
         >
           {category.name} ({category.postCount})
         </button>

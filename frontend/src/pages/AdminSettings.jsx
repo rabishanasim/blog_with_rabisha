@@ -9,27 +9,27 @@ const AdminSettings = () => {
     lastName: '',
     title: '',
     bio: '',
-    
+
     // Contact Information
     email: '',
     phone: '',
     location: '',
     website: '',
-    
+
     // Social Media (optional)
     twitter: '',
     linkedin: '',
     github: '',
     instagram: '',
-    
+
     // Blog Settings
     blogTitle: '',
     blogSubtitle: '',
     blogDescription: '',
-    
+
     // Profile Image
     avatarUrl: '',
-    
+
     // Skills
     skills: []
   })
@@ -45,7 +45,7 @@ const AdminSettings = () => {
       try {
         setLoading(true)
         const settings = await adminAPI.getSettings()
-        
+
         // Transform backend data to form structure
         setAdminSettings({
           firstName: settings.firstName || '',
@@ -88,7 +88,7 @@ const AdminSettings = () => {
     e.preventDefault()
     setIsSaving(true)
     setError(null)
-    
+
     try {
       // Transform form data to backend format
       const settingsData = {
@@ -114,7 +114,7 @@ const AdminSettings = () => {
       }
 
       await adminAPI.updateSettings(settingsData)
-      
+
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (err) {
@@ -177,7 +177,7 @@ const AdminSettings = () => {
                 <User className="h-5 w-5 mr-2 text-primary-600" />
                 Personal Information
               </h2>
-              
+
               {/* Profile Image */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">

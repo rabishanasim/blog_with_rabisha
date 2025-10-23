@@ -113,9 +113,8 @@ const CommentSection = ({ postId }) => {
           <div className="flex items-center space-x-4 text-xs">
             <button
               onClick={() => handleLikeComment(comment._id)}
-              className={`flex items-center space-x-1 ${
-                comment.hasLiked ? 'text-red-600' : 'text-gray-500 hover:text-red-600'
-              }`}
+              className={`flex items-center space-x-1 ${comment.hasLiked ? 'text-red-600' : 'text-gray-500 hover:text-red-600'
+                }`}
             >
               <Heart className={`h-4 w-4 ${comment.hasLiked ? 'fill-current' : ''}`} />
               <span>{comment.likeCount}</span>
@@ -259,11 +258,11 @@ const CommentSection = ({ postId }) => {
                 >
                   Previous
                 </button>
-                
+
                 <span className="px-4 py-2 text-gray-700">
                   Page {commentsData.pagination.current} of {commentsData.pagination.total}
                 </span>
-                
+
                 <button
                   onClick={() => setPage(page + 1)}
                   disabled={!commentsData.pagination.hasNext}

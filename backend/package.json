@@ -8,7 +8,13 @@
     "dev": "nodemon server.js",
     "test": "jest"
   },
-  "keywords": ["blog", "nodejs", "express", "mongodb", "react"],
+  "keywords": [
+    "blog",
+    "nodejs",
+    "express",
+    "mongodb",
+    "react"
+  ],
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {

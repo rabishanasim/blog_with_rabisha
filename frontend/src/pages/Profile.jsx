@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner'
 
 const Profile = () => {
   const { user } = useAuth()
-  
+
   const { data: userPosts, isLoading } = useQuery(
     'user-posts',
     () => api.get(`/posts?author=${user.id}`).then(res => res.data),
@@ -20,7 +20,7 @@ const Profile = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow-md p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">My Profile</h1>
-          
+
           <div className="space-y-6">
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
@@ -42,7 +42,7 @@ const Profile = () => {
                   <p className="mt-1 text-sm text-gray-900">{user?.username}</p>
                 </div>
               </div>
-              
+
               {user?.bio && (
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700">Bio</label>

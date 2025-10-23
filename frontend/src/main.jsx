@@ -29,7 +29,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <PostProvider>
               <PostInteractionProvider>
                 <App />
-                <Toaster 
+                <Toaster
                   position="top-right"
                   toastOptions={{
                     duration: 4000,

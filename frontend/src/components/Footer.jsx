@@ -16,7 +16,7 @@ const Footer = () => {
               <span className="text-xl font-bold">BlogPlatform</span>
             </Link>
             <p className="text-gray-300 mb-4 max-w-md">
-              A modern blog platform built with React and Node.js. Share your thoughts, 
+              A modern blog platform built with React and Node.js. Share your thoughts,
               connect with readers, and build your online presence.
             </p>
             <div className="flex space-x-4">

@@ -46,7 +46,7 @@ export const PostProvider = ({ children }) => {
       setIsLoading(true)
 
       // Process tags
-      const tags = postData.tags 
+      const tags = postData.tags
         ? postData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
         : []
 
@@ -113,7 +113,7 @@ export const PostProvider = ({ children }) => {
       }
 
       // Process tags
-      const tags = postData.tags 
+      const tags = postData.tags
         ? postData.tags.split(',').map(tag => tag.trim()).filter(tag => tag)
         : []
 
@@ -129,8 +129,8 @@ export const PostProvider = ({ children }) => {
         category: postData.category || null,
         tags: tags,
         updatedAt: new Date().toISOString(),
-        publishedAt: postData.status === 'published' && !posts[postIndex].publishedAt 
-          ? new Date().toISOString() 
+        publishedAt: postData.status === 'published' && !posts[postIndex].publishedAt
+          ? new Date().toISOString()
           : posts[postIndex].publishedAt,
         readingTime: Math.ceil(postData.content.split(' ').length / 200),
         featuredImage: postData.featuredImageUrl || posts[postIndex].featuredImage
@@ -211,7 +211,7 @@ export const PostProvider = ({ children }) => {
     // Filter by search term
     if (search) {
       const searchLower = search.toLowerCase()
-      filteredPosts = filteredPosts.filter(post => 
+      filteredPosts = filteredPosts.filter(post =>
         post.title.toLowerCase().includes(searchLower) ||
         post.excerpt.toLowerCase().includes(searchLower) ||
         post.content.toLowerCase().includes(searchLower) ||
@@ -254,13 +254,13 @@ export const PostProvider = ({ children }) => {
   // Get user's posts
   const getUserPosts = (userId = user?.id, status = null) => {
     if (!userId) return []
-    
+
     let userPosts = posts.filter(post => post.author.id === userId)
-    
+
     if (status) {
       userPosts = userPosts.filter(post => post.status === status)
     }
-    
+
     return userPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   }
 

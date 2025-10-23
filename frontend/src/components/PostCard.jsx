@@ -8,7 +8,7 @@ const PostCard = ({ post }) => {
   const { toggleLike, incrementViewCount, getPostStats, isPostLiked } = usePostInteraction()
   const [showCommentInput, setShowCommentInput] = useState(false)
   const [commentText, setCommentText] = useState('')
-  
+
   const postId = post._id || post.id
   const stats = getPostStats(postId)
   const isLiked = isPostLiked(postId)
@@ -46,7 +46,7 @@ const PostCard = ({ post }) => {
           <div className="text-center p-6">
             <div className="w-16 h-16 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full mx-auto mb-3 flex items-center justify-center">
               <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
               </svg>
             </div>
             <h3 className="text-sm text-gray-600">No Image</h3>
@@ -58,7 +58,7 @@ const PostCard = ({ post }) => {
         {/* Category */}
         {post.category && (
           <div className="mb-3">
-            <span 
+            <span
               className="inline-block px-3 py-1 text-xs font-semibold text-white rounded-full shadow-sm"
               style={{ backgroundColor: post.category.color || '#3b82f6' }}
             >
@@ -113,18 +113,17 @@ const PostCard = ({ post }) => {
               <Eye className="h-4 w-4 mr-1" />
               {stats.views}
             </div>
-            <button 
+            <button
               onClick={handleLikeClick}
-              className={`flex items-center transition-all duration-200 transform hover:scale-105 ${
-                isLiked 
-                  ? 'text-red-500 hover:text-red-600' 
+              className={`flex items-center transition-all duration-200 transform hover:scale-105 ${isLiked
+                  ? 'text-red-500 hover:text-red-600'
                   : 'text-gray-400 hover:text-red-500'
-              }`}
+                }`}
             >
               <Heart className={`h-4 w-4 mr-1 ${isLiked ? 'fill-current' : ''}`} />
               {stats.likes}
             </button>
-            <button 
+            <button
               onClick={handleCommentClick}
               className="flex items-center hover:text-blue-500 transition-all duration-200 transform hover:scale-105"
             >

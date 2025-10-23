@@ -3,24 +3,24 @@ import { Search, X, Clock, TrendingUp } from 'lucide-react'
 import { useSearch } from '../contexts/SearchContext'
 import { Link } from 'react-router-dom'
 
-const SearchBar = ({ 
-  placeholder = "Search posts...", 
-  className = "", 
+const SearchBar = ({
+  placeholder = "Search posts...",
+  className = "",
   showResults = true,
   size = "default" // "default" | "large"
 }) => {
-  const { 
-    searchTerm, 
-    setSearchTerm, 
-    searchResults, 
-    isSearching, 
-    searchHistory, 
-    handleSearch, 
+  const {
+    searchTerm,
+    setSearchTerm,
+    searchResults,
+    isSearching,
+    searchHistory,
+    handleSearch,
     clearSearch,
     clearHistory,
-    navigateToSearch 
+    navigateToSearch
   } = useSearch()
-  
+
   const [isOpen, setIsOpen] = useState(false)
   const [localQuery, setLocalQuery] = useState(searchTerm)
   const searchRef = useRef(null)
@@ -28,7 +28,7 @@ const SearchBar = ({
 
   // Popular search terms (in a real app, this would come from analytics)
   const popularSearches = [
-    'JavaScript', 'React', 'Node.js', 'Python', 'Web Development', 
+    'JavaScript', 'React', 'Node.js', 'Python', 'Web Development',
     'Machine Learning', 'DevOps', 'CSS', 'TypeScript', 'API'
   ]
 
@@ -40,7 +40,7 @@ const SearchBar = ({
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        searchRef.current && 
+        searchRef.current &&
         !searchRef.current.contains(event.target) &&
         resultsRef.current &&
         !resultsRef.current.contains(event.target)
@@ -65,7 +65,7 @@ const SearchBar = ({
     const value = e.target.value
     setLocalQuery(value)
     setSearchTerm(value)
-    
+
     // Show dropdown when typing
     if (value.trim()) {
       setIsOpen(true)
@@ -85,10 +85,10 @@ const SearchBar = ({
     searchRef.current?.querySelector('input')?.focus()
   }
 
-  const inputClasses = size === "large" 
-    ? "input flex-1 text-lg py-4 px-6 pr-12" 
+  const inputClasses = size === "large"
+    ? "input flex-1 text-lg py-4 px-6 pr-12"
     : "input flex-1 pl-10 pr-10"
-  
+
   const buttonClasses = size === "large"
     ? "btn btn-primary px-8 py-4 text-lg rounded-l-none"
     : "btn btn-primary rounded-l-none px-6"
@@ -130,7 +130,7 @@ const SearchBar = ({
 
       {/* Search Results Dropdown */}
       {showResults && isOpen && (
-        <div 
+        <div
           ref={resultsRef}
           className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto"
         >

@@ -34,7 +34,7 @@ const Privacy = () => {
               Information We Collect
             </h2>
             <p className="text-gray-600 mb-6">
-              We collect information you provide directly to us, such as when you create an account, 
+              We collect information you provide directly to us, such as when you create an account,
               write a post, or contact us. This may include:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-600 mb-8">
@@ -66,7 +66,7 @@ const Privacy = () => {
               Information Sharing
             </h2>
             <p className="text-gray-600 mb-6">
-              We do not sell, trade, or otherwise transfer your personal information to third parties 
+              We do not sell, trade, or otherwise transfer your personal information to third parties
               without your consent, except in the following circumstances:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-600 mb-8">
@@ -81,8 +81,8 @@ const Privacy = () => {
               Cookies and Tracking
             </h2>
             <p className="text-gray-600 mb-8">
-              We use cookies and similar technologies to enhance your experience, analyze site usage, 
-              and assist in our marketing efforts. You can control cookie preferences through your 
+              We use cookies and similar technologies to enhance your experience, analyze site usage,
+              and assist in our marketing efforts. You can control cookie preferences through your
               browser settings.
             </p>
 
@@ -101,8 +101,8 @@ const Privacy = () => {
 
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Security</h2>
             <p className="text-gray-600 mb-8">
-              We implement appropriate security measures to protect your personal information against 
-              unauthorized access, alteration, disclosure, or destruction. However, no method of 
+              We implement appropriate security measures to protect your personal information against
+              unauthorized access, alteration, disclosure, or destruction. However, no method of
               transmission over the Internet is 100% secure.
             </p>
 

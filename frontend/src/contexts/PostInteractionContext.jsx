@@ -45,17 +45,17 @@ export const PostInteractionProvider = ({ children }) => {
     try {
       const currentStats = postStats.get(postId) || { likes: 0, comments: 0, views: 0, isLiked: false }
       const wasLiked = likedPosts.has(postId)
-      
+
       // Optimistic update
       const newLikeCount = wasLiked ? currentStats.likes - 1 : currentStats.likes + 1
       const newLikedPosts = new Set(likedPosts)
-      
+
       if (wasLiked) {
         newLikedPosts.delete(postId)
       } else {
         newLikedPosts.add(postId)
       }
-      
+
       setLikedPosts(newLikedPosts)
       setPostStats(prev => new Map(prev.set(postId, {
         ...currentStats,
@@ -70,13 +70,13 @@ export const PostInteractionProvider = ({ children }) => {
 
       // TODO: Replace with actual API call
       // await api.post(`/posts/${postId}/like`)
-      
+
       return !wasLiked
     } catch (error) {
       // Revert optimistic update on error
       const currentStats = postStats.get(postId) || { likes: 0, comments: 0, views: 0, isLiked: false }
       const wasLiked = likedPosts.has(postId)
-      
+
       setPostStats(prev => new Map(prev.set(postId, currentStats)))
       toast.error('Failed to update like status')
       return false
@@ -86,7 +86,7 @@ export const PostInteractionProvider = ({ children }) => {
   const incrementViewCount = useCallback(async (postId) => {
     try {
       const currentStats = postStats.get(postId) || { likes: 0, comments: 0, views: 0, isLiked: false }
-      
+
       setPostStats(prev => new Map(prev.set(postId, {
         ...currentStats,
         views: currentStats.views + 1
@@ -94,7 +94,7 @@ export const PostInteractionProvider = ({ children }) => {
 
       // TODO: Replace with actual API call
       // await api.post(`/posts/${postId}/view`)
-      
+
     } catch (error) {
       console.error('Failed to increment view count:', error)
     }
@@ -113,7 +113,7 @@ export const PostInteractionProvider = ({ children }) => {
 
     try {
       const currentStats = postStats.get(postId) || { likes: 0, comments: 0, views: 0, isLiked: false }
-      
+
       // Optimistic update
       setPostStats(prev => new Map(prev.set(postId, {
         ...currentStats,
@@ -121,10 +121,10 @@ export const PostInteractionProvider = ({ children }) => {
       })))
 
       toast.success('Comment added!')
-      
+
       // TODO: Replace with actual API call
       // const response = await api.post(`/posts/${postId}/comments`, { text: commentText })
-      
+
       return true
     } catch (error) {
       // Revert optimistic update

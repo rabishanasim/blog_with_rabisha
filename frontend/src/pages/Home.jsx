@@ -31,7 +31,7 @@ const Home = () => {
   // Fetch posts using PostContext
   useEffect(() => {
     setIsLoading(true)
-    
+
     // Simulate loading delay
     setTimeout(() => {
       const result = getPosts({
@@ -40,9 +40,9 @@ const Home = () => {
         status: 'published',
         category: selectedCategory || null
       })
-      
+
       setPostsData(result)
-      
+
       // Get featured posts
       const featured = getPosts({
         page: 1,
@@ -51,7 +51,7 @@ const Home = () => {
         featured: true
       })
       setFeaturedPosts(featured.posts)
-      
+
       setIsLoading(false)
     }, 500)
   }, [page, selectedCategory, getPosts])
@@ -90,7 +90,7 @@ const Home = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
               <div className="max-w-lg mx-auto shadow-xl">
-                <SearchBar 
+                <SearchBar
                   placeholder="Search amazing articles..."
                   className="w-full"
                   showResults={true}
@@ -138,8 +138,8 @@ const Home = () => {
                   <button
                     onClick={() => handleCategoryChange('')}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 ${!selectedCategory
-                        ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-md hover:shadow-lg'
+                      ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg'
+                      : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-md hover:shadow-lg'
                       }`}
                   >
                     All Posts
@@ -149,8 +149,8 @@ const Home = () => {
                       key={category._id}
                       onClick={() => handleCategoryChange(category.slug)}
                       className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 transform hover:scale-105 ${selectedCategory === category.slug
-                          ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg'
-                          : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-md hover:shadow-lg'
+                        ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-primary-50 hover:text-primary-600 shadow-md hover:shadow-lg'
                         }`}
                     >
                       {category.name} ({category.postCount})
@@ -223,7 +223,7 @@ const Home = () => {
           <aside className="lg:w-1/3 space-y-8">
             {/* Admin Profile */}
             <AdminProfile showStats={true} />
-            
+
             <div className="card">
               <div className="p-6">
                 <h3 className="text-xl font-bold gradient-text mb-4">About This Blog</h3>

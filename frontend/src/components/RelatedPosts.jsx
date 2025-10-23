@@ -11,13 +11,13 @@ const RelatedPosts = ({ currentPostId, categoryId, tags }) => {
     async () => {
       // Try to find posts in the same category first
       let query = `/posts?category=${categoryId}&limit=3`
-      
+
       const response = await api.get(query)
       let posts = response.data.posts || []
-      
+
       // Filter out the current post
       posts = posts.filter(post => post._id !== currentPostId)
-      
+
       // If we don't have enough posts, try to get more by tags
       if (posts.length < 3 && tags && tags.length > 0) {
         const tagQuery = `/posts?tag=${tags[0]}&limit=6`
@@ -27,7 +27,7 @@ const RelatedPosts = ({ currentPostId, categoryId, tags }) => {
         )
         posts = [...posts, ...tagPosts].slice(0, 3)
       }
-      
+
       return posts.slice(0, 3)
     },
     {
@@ -44,7 +44,7 @@ const RelatedPosts = ({ currentPostId, categoryId, tags }) => {
     <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Posts</h2>
-        
+
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {relatedPosts.map((post) => (
             <Link
@@ -67,7 +67,7 @@ const RelatedPosts = ({ currentPostId, categoryId, tags }) => {
                 <div className="p-4">
                   {/* Category */}
                   {post.category && (
-                    <span 
+                    <span
                       className="inline-block px-2 py-1 text-xs font-medium text-white rounded mb-2"
                       style={{ backgroundColor: post.category.color }}
                     >

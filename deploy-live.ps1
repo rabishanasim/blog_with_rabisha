@@ -14,10 +14,10 @@ Write-Host "Repository name: $repoName"
 try {
     $githubApiUrl = "https://api.github.com/user/repos"
     $repoData = @{
-        name = $repoName
+        name        = $repoName
         description = "Full-stack Personal Blog Platform with React frontend and Node.js backend - Auto-deployed $(Get-Date -Format 'yyyy-MM-dd')"
-        private = $false
-        auto_init = $false
+        private     = $false
+        auto_init   = $false
     } | ConvertTo-Json
     
     Write-Host "Creating GitHub repository..."
@@ -29,7 +29,8 @@ try {
     Write-Host "Set as Public repository" -ForegroundColor White
     Write-Host ""
     
-} catch {
+}
+catch {
     Write-Host "Repository creation step needs manual setup" -ForegroundColor Yellow
 }
 

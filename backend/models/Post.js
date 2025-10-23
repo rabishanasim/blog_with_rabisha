@@ -76,47 +76,47 @@ const postSchema = new mongoose.Schema({
 });
 
 // Create slug from title before saving
-postSchema.pre('save', function(next) {
+postSchema.pre('save', function (next) {
   if (this.isModified('title')) {
-    this.slug = slugify(this.title, { 
-      lower: true, 
+    this.slug = slugify(this.title, {
+      lower: true,
       strict: true,
       remove: /[*+~.()'"!:@]/g
     });
   }
-  
+
   // Calculate reading time (average 200 words per minute)
   if (this.isModified('content')) {
     const wordCount = this.content.split(/\s+/).length;
     this.readingTime = Math.ceil(wordCount / 200);
   }
-  
+
   // Set publishedAt when status changes to published
   if (this.isModified('status') && this.status === 'published' && !this.publishedAt) {
     this.publishedAt = new Date();
   }
-  
+
   next();
 });
 
 // Ensure unique slug
-postSchema.pre('save', async function(next) {
+postSchema.pre('save', async function (next) {
   if (this.isModified('title')) {
     let slug = this.slug;
     let counter = 1;
-    
+
     while (await this.constructor.findOne({ slug, _id: { $ne: this._id } })) {
       slug = `${this.slug}-${counter}`;
       counter++;
     }
-    
+
     this.slug = slug;
   }
   next();
 });
 
 // Virtual for like count
-postSchema.virtual('likeCount').get(function() {
+postSchema.virtual('likeCount').get(function () {
   return this.likes.length;
 });
 

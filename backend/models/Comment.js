@@ -52,12 +52,12 @@ const commentSchema = new mongoose.Schema({
 });
 
 // Virtual for like count
-commentSchema.virtual('likeCount').get(function() {
+commentSchema.virtual('likeCount').get(function () {
   return this.likes.length;
 });
 
 // Virtual for reply count
-commentSchema.virtual('replyCount').get(function() {
+commentSchema.virtual('replyCount').get(function () {
   return this.replies.length;
 });
 
@@ -70,7 +70,7 @@ commentSchema.index({ author: 1 });
 commentSchema.index({ parentComment: 1 });
 
 // Middleware to handle reply management
-commentSchema.pre('save', async function(next) {
+commentSchema.pre('save', async function (next) {
   if (this.isNew && this.parentComment) {
     // Add this comment to parent's replies array
     await mongoose.model('Comment').findByIdAndUpdate(
@@ -82,7 +82,7 @@ commentSchema.pre('save', async function(next) {
 });
 
 // Middleware to handle edit tracking
-commentSchema.pre('save', function(next) {
+commentSchema.pre('save', function (next) {
   if (this.isModified('content') && !this.isNew) {
     this.isEdited = true;
     this.editedAt = new Date();

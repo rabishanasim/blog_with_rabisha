@@ -24,11 +24,11 @@ router.get('/', async (req, res) => {
 router.get('/:slug', async (req, res) => {
   try {
     const category = await Category.findOne({ slug: req.params.slug });
-    
+
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
-    
+
     res.json(category);
   } catch (error) {
     console.error(error);
@@ -60,18 +60,18 @@ router.post('/', protect, admin, [
     }
 
     const { name, description, color } = req.body;
-    
+
     const existingCategory = await Category.findOne({ name });
     if (existingCategory) {
       return res.status(400).json({ message: 'Category already exists' });
     }
-    
+
     const category = await Category.create({
       name,
       description,
       color: color || '#3B82F6'
     });
-    
+
     res.status(201).json({
       message: 'Category created successfully',
       category
@@ -107,19 +107,19 @@ router.put('/:id', protect, admin, [
     }
 
     const category = await Category.findById(req.params.id);
-    
+
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
-    
+
     const { name, description, color } = req.body;
-    
+
     if (name) category.name = name;
     if (description !== undefined) category.description = description;
     if (color) category.color = color;
-    
+
     await category.save();
-    
+
     res.json({
       message: 'Category updated successfully',
       category
@@ -136,13 +136,13 @@ router.put('/:id', protect, admin, [
 router.delete('/:id', protect, admin, async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
-    
+
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
-    
+
     await Category.findByIdAndDelete(req.params.id);
-    
+
     res.json({ message: 'Category deleted successfully' });
   } catch (error) {
     console.error(error);

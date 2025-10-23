@@ -11,6 +11,7 @@ const userRoutes = require('./routes/users');
 const commentRoutes = require('./routes/comments');
 const categoryRoutes = require('./routes/categories');
 const adminRoutes = require('./routes/admin');
+const userContentRoutes = require('./routes/userContent');
 
 // Load environment variables
 dotenv.config();
@@ -36,8 +37,8 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/blog-plat
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log('Connected to MongoDB'))
-.catch((err) => console.error('MongoDB connection error:', err));
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -46,11 +47,12 @@ app.use('/api/users', userRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/user-content', userContentRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
+  res.status(200).json({
+    status: 'OK',
     message: 'Blog Platform API is running',
     timestamp: new Date().toISOString()
   });
@@ -59,7 +61,7 @@ app.get('/api/health', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
+  res.status(500).json({
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'production' ? {} : err.stack
   });

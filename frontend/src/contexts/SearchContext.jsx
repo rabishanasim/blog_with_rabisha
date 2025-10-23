@@ -42,15 +42,15 @@ export const SearchProvider = ({ children }) => {
     }
 
     setIsSearching(true)
-    
+
     try {
       // Update URL with search query
       setSearchParams({ q: query })
-      
+
       // Add to search history
       const newHistory = [query, ...searchHistory.filter(item => item !== query)].slice(0, 10)
       setSearchHistory(newHistory)
-      
+
       // TODO: Replace with actual API call when backend is connected
       // For now, simulate search results
       setTimeout(() => {
@@ -70,11 +70,11 @@ export const SearchProvider = ({ children }) => {
             type: 'post'
           }
         ]
-        
+
         setSearchResults(mockResults)
         setIsSearching(false)
       }, 1000)
-      
+
     } catch (error) {
       console.error('Search error:', error)
       setSearchResults([])

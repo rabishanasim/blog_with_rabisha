@@ -27,7 +27,7 @@ const FeaturedPosts = ({ posts }) => {
           <div className="p-6">
             {/* Category */}
             {post.category && (
-              <span 
+              <span
                 className="inline-block px-2 py-1 text-xs font-medium text-white rounded mb-3"
                 style={{ backgroundColor: post.category.color }}
               >

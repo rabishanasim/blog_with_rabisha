@@ -12,7 +12,7 @@ const AdminProfile = ({ variant = 'default', showStats = false }) => {
     const fetchAdminInfo = async () => {
       try {
         const settings = await adminAPI.getSettings()
-        
+
         // Transform backend data to match component needs
         const adminData = {
           name: settings.fullName || `${settings.firstName} ${settings.lastName}`,
@@ -20,9 +20,9 @@ const AdminProfile = ({ variant = 'default', showStats = false }) => {
           bio: settings.bio || 'Welcome to my blog!',
           email: settings.email || 'admin@example.com',
           location: settings.location || 'Unknown Location',
-          joinDate: new Date(settings.joinDate).toLocaleDateString('en-US', { 
-            month: 'long', 
-            year: 'numeric' 
+          joinDate: new Date(settings.joinDate).toLocaleDateString('en-US', {
+            month: 'long',
+            year: 'numeric'
           }),
           avatar: settings.avatarUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200',
           skills: settings.skills || ['Content Writing', 'Blog Management'],
@@ -33,12 +33,12 @@ const AdminProfile = ({ variant = 'default', showStats = false }) => {
             experience: Math.max(1, new Date().getFullYear() - new Date(settings.joinDate).getFullYear()) + '+' // Calculate years
           }
         }
-        
+
         setAdminInfo(adminData)
       } catch (err) {
         console.error('Failed to load admin info:', err)
         setError('Failed to load admin information')
-        
+
         // Fallback to default data if backend fails
         setAdminInfo({
           name: 'Blog Admin',
@@ -129,7 +129,7 @@ const AdminProfile = ({ variant = 'default', showStats = false }) => {
           <div className="space-y-3">
             <div className="flex items-center text-sm">
               <Mail className="h-4 w-4 text-gray-400 mr-3" />
-              <a 
+              <a
                 href={`mailto:${adminInfo.email}`}
                 className="text-gray-600 hover:text-primary-600 transition-colors"
               >

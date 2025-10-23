@@ -31,8 +31,8 @@ const Terms = () => {
           <div className="prose prose-lg max-w-none">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Acceptance of Terms</h2>
             <p className="text-gray-600 mb-8">
-              By accessing and using BlogPlatform, you accept and agree to be bound by the terms 
-              and provision of this agreement. If you do not agree to these terms, you should not 
+              By accessing and using BlogPlatform, you accept and agree to be bound by the terms
+              and provision of this agreement. If you do not agree to these terms, you should not
               use this service.
             </p>
 
@@ -41,7 +41,7 @@ const Terms = () => {
               User Accounts
             </h2>
             <p className="text-gray-600 mb-6">
-              When you create an account with us, you must provide accurate, complete, and current 
+              When you create an account with us, you must provide accurate, complete, and current
               information. You are responsible for:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-600 mb-8">
@@ -56,7 +56,7 @@ const Terms = () => {
               Content Guidelines
             </h2>
             <p className="text-gray-600 mb-6">
-              You retain ownership of content you post, but you grant us a license to use it. 
+              You retain ownership of content you post, but you grant us a license to use it.
               Content must not:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-600 mb-8">
@@ -73,8 +73,8 @@ const Terms = () => {
               Intellectual Property
             </h2>
             <p className="text-gray-600 mb-8">
-              The service and its original content, features, and functionality are owned by 
-              BlogPlatform and are protected by international copyright, trademark, patent, 
+              The service and its original content, features, and functionality are owned by
+              BlogPlatform and are protected by international copyright, trademark, patent,
               trade secret, and other intellectual property laws.
             </p>
 
@@ -96,8 +96,8 @@ const Terms = () => {
 
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Service Availability</h2>
             <p className="text-gray-600 mb-8">
-              We strive to maintain high availability but do not guarantee that the service will be 
-              uninterrupted or error-free. We may suspend or terminate the service for maintenance, 
+              We strive to maintain high availability but do not guarantee that the service will be
+              uninterrupted or error-free. We may suspend or terminate the service for maintenance,
               updates, or other operational reasons.
             </p>
 
@@ -106,23 +106,23 @@ const Terms = () => {
               Limitation of Liability
             </h2>
             <p className="text-gray-600 mb-8">
-              In no event shall BlogPlatform, nor its directors, employees, partners, agents, 
-              suppliers, or affiliates, be liable for any indirect, incidental, special, 
-              consequential, or punitive damages, including without limitation, loss of profits, 
+              In no event shall BlogPlatform, nor its directors, employees, partners, agents,
+              suppliers, or affiliates, be liable for any indirect, incidental, special,
+              consequential, or punitive damages, including without limitation, loss of profits,
               data, use, goodwill, or other intangible losses.
             </p>
 
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Termination</h2>
             <p className="text-gray-600 mb-8">
-              We may terminate or suspend your account and bar access to the service immediately, 
-              without prior notice or liability, under our sole discretion, for any reason 
+              We may terminate or suspend your account and bar access to the service immediately,
+              without prior notice or liability, under our sole discretion, for any reason
               whatsoever including breach of the Terms.
             </p>
 
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Changes to Terms</h2>
             <p className="text-gray-600 mb-8">
-              We reserve the right, at our sole discretion, to modify or replace these Terms at 
-              any time. If a revision is material, we will provide at least 30 days notice prior 
+              We reserve the right, at our sole discretion, to modify or replace these Terms at
+              any time. If a revision is material, we will provide at least 30 days notice prior
               to any new terms taking effect.
             </p>
 

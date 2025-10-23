@@ -16,6 +16,9 @@ import EditPost from './pages/EditPost'
 import Profile from './pages/Profile'
 import MyPosts from './pages/MyPosts'
 import AdminSettings from './pages/AdminSettings'
+import UserContentUpload from './pages/UserContentUpload'
+import UserContentGallery from './pages/UserContentGallery'
+import ContentModeration from './pages/ContentModeration'
 import NotFound from './pages/NotFound'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -72,6 +75,18 @@ function App() {
             <AdminSettings />
           </ProtectedRoute>
         } />
+        <Route path="/admin/moderation" element={
+          <ProtectedRoute adminOnly>
+            <ContentModeration />
+          </ProtectedRoute>
+        } />
+        <Route path="/upload-content" element={
+          <ProtectedRoute>
+            <UserContentUpload />
+          </ProtectedRoute>
+        } />
+        <Route path="/community-content" element={<UserContentGallery />} />
+        <Route path="/user-content/:slug" element={<UserContentGallery />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>

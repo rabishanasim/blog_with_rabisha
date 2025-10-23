@@ -9,7 +9,7 @@ const Category = () => {
   const { initializePostStats } = usePostInteraction()
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
-  
+
   // Category information
   const categories = {
     technology: {
@@ -122,7 +122,7 @@ const Category = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex justify-center mb-6">
-              <div 
+              <div
                 className="w-20 h-20 rounded-full flex items-center justify-center text-4xl shadow-xl"
                 style={{ backgroundColor: `${category.color}20` }}
               >
@@ -162,7 +162,7 @@ const Category = () => {
                   Category: {category.name}
                 </div>
               </div>
-              
+
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {posts.map((post) => (
                   <PostCard key={post._id} post={post} />
@@ -178,7 +178,7 @@ const Category = () => {
             </>
           ) : (
             <div className="text-center py-16">
-              <div 
+              <div
                 className="w-24 h-24 mx-auto mb-6 rounded-full flex items-center justify-center text-5xl"
                 style={{ backgroundColor: `${category.color}10` }}
               >
@@ -188,7 +188,7 @@ const Category = () => {
                 No Articles Yet
               </h3>
               <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                We haven't published any articles in the {category.name} category yet. 
+                We haven't published any articles in the {category.name} category yet.
                 Check back soon for new content!
               </p>
               <Link
@@ -217,7 +217,7 @@ const Category = () => {
                   to={`/category/${key}`}
                   className="card p-6 text-center group hover:shadow-xl transition-all duration-300"
                 >
-                  <div 
+                  <div
                     className="w-16 h-16 mx-auto mb-3 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"
                     style={{ backgroundColor: `${cat.color}20` }}
                   >

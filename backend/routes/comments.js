@@ -14,9 +14,9 @@ router.get('/post/:postId', optionalAuth, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    
+
     // Get top-level comments (no parent)
-    const comments = await Comment.find({ 
+    const comments = await Comment.find({
       post: req.params.postId,
       parentComment: null,
       isApproved: true
@@ -32,15 +32,15 @@ router.get('/post/:postId', optionalAuth, async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
-    
-    const total = await Comment.countDocuments({ 
+
+    const total = await Comment.countDocuments({
       post: req.params.postId,
       parentComment: null,
       isApproved: true
     });
-    
+
     const totalPages = Math.ceil(total / limit);
-    
+
     // Add user's like status for each comment
     const commentsWithLikeStatus = comments.map(comment => {
       const commentObj = comment.toJSON();
@@ -68,7 +68,7 @@ router.get('/post/:postId', optionalAuth, async (req, res) => {
       }
       return commentObj;
     });
-    
+
     res.json({
       comments: commentsWithLikeStatus,
       pagination: {
@@ -113,40 +113,40 @@ router.post('/', protect, [
     }
 
     const { content, post, parentComment } = req.body;
-    
+
     // Verify post exists and comments are enabled
     const postDoc = await Post.findById(post);
     if (!postDoc) {
       return res.status(404).json({ message: 'Post not found' });
     }
-    
+
     if (!postDoc.commentsEnabled) {
       return res.status(400).json({ message: 'Comments are disabled for this post' });
     }
-    
+
     // Verify parent comment exists if provided
     if (parentComment) {
       const parentCommentDoc = await Comment.findById(parentComment);
       if (!parentCommentDoc) {
         return res.status(404).json({ message: 'Parent comment not found' });
       }
-      
+
       // Ensure parent comment belongs to the same post
       if (parentCommentDoc.post.toString() !== post) {
         return res.status(400).json({ message: 'Parent comment does not belong to this post' });
       }
     }
-    
+
     const comment = await Comment.create({
       content,
       post,
       author: req.user.id,
       parentComment: parentComment || null
     });
-    
+
     const populatedComment = await Comment.findById(comment._id)
       .populate('author', 'username firstName lastName avatar');
-    
+
     res.status(201).json({
       message: 'Comment created successfully',
       comment: populatedComment
@@ -178,22 +178,22 @@ router.put('/:id', protect, [
     }
 
     const comment = await Comment.findById(req.params.id);
-    
+
     if (!comment) {
       return res.status(404).json({ message: 'Comment not found' });
     }
-    
+
     // Check if user is admin or the comment author
     if (req.user.role !== 'admin' && comment.author.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to update this comment' });
     }
-    
+
     comment.content = req.body.content;
     await comment.save();
-    
+
     const updatedComment = await Comment.findById(comment._id)
       .populate('author', 'username firstName lastName avatar');
-    
+
     res.json({
       message: 'Comment updated successfully',
       comment: updatedComment
@@ -210,21 +210,21 @@ router.put('/:id', protect, [
 router.delete('/:id', protect, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
-    
+
     if (!comment) {
       return res.status(404).json({ message: 'Comment not found' });
     }
-    
+
     // Check if user is admin or the comment author
     if (req.user.role !== 'admin' && comment.author.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to delete this comment' });
     }
-    
+
     // Delete all replies if this is a parent comment
     if (comment.replies.length > 0) {
       await Comment.deleteMany({ _id: { $in: comment.replies } });
     }
-    
+
     // Remove this comment from parent's replies array if it's a reply
     if (comment.parentComment) {
       await Comment.findByIdAndUpdate(
@@ -232,9 +232,9 @@ router.delete('/:id', protect, async (req, res) => {
         { $pull: { replies: comment._id } }
       );
     }
-    
+
     await Comment.findByIdAndDelete(req.params.id);
-    
+
     res.json({ message: 'Comment deleted successfully' });
   } catch (error) {
     console.error(error);
@@ -248,32 +248,32 @@ router.delete('/:id', protect, async (req, res) => {
 router.post('/:id/like', protect, async (req, res) => {
   try {
     const comment = await Comment.findById(req.params.id);
-    
+
     if (!comment) {
       return res.status(404).json({ message: 'Comment not found' });
     }
-    
+
     const likeIndex = comment.likes.findIndex(
       like => like.user.toString() === req.user.id
     );
-    
+
     if (likeIndex > -1) {
       // Unlike
       comment.likes.splice(likeIndex, 1);
       await comment.save();
-      res.json({ 
-        message: 'Comment unliked', 
-        liked: false, 
-        likeCount: comment.likes.length 
+      res.json({
+        message: 'Comment unliked',
+        liked: false,
+        likeCount: comment.likes.length
       });
     } else {
       // Like
       comment.likes.push({ user: req.user.id });
       await comment.save();
-      res.json({ 
-        message: 'Comment liked', 
-        liked: true, 
-        likeCount: comment.likes.length 
+      res.json({
+        message: 'Comment liked',
+        liked: true,
+        likeCount: comment.likes.length
       });
     }
   } catch (error) {
@@ -290,29 +290,29 @@ router.get('/', protect, admin, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
-    
+
     let query = {};
-    
+
     // Filter by approval status
     if (req.query.approved !== undefined) {
       query.isApproved = req.query.approved === 'true';
     }
-    
+
     // Search in content
     if (req.query.search) {
       query.content = new RegExp(req.query.search, 'i');
     }
-    
+
     const comments = await Comment.find(query)
       .populate('author', 'username firstName lastName')
       .populate('post', 'title slug')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
-    
+
     const total = await Comment.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
-    
+
     res.json({
       comments,
       pagination: {
@@ -335,16 +335,16 @@ router.get('/', protect, admin, async (req, res) => {
 router.put('/:id/approve', protect, admin, async (req, res) => {
   try {
     const { isApproved } = req.body;
-    
+
     const comment = await Comment.findById(req.params.id);
-    
+
     if (!comment) {
       return res.status(404).json({ message: 'Comment not found' });
     }
-    
+
     comment.isApproved = isApproved;
     await comment.save();
-    
+
     res.json({
       message: `Comment ${isApproved ? 'approved' : 'disapproved'} successfully`,
       comment

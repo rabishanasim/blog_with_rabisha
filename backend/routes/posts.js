@@ -15,17 +15,17 @@ router.get('/', optionalAuth, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
-    
+
     // Build query
     let query = { status: 'published' };
-    
+
     // Status filter - allow users to see their own drafts
     if (req.query.status && req.user) {
       if (req.query.status === 'all' && req.query.author === req.user.id) {
         delete query.status; // Show all posts for the author
       }
     }
-    
+
     // Category filter
     if (req.query.category) {
       const category = await Category.findOne({ slug: req.query.category });
@@ -33,25 +33,25 @@ router.get('/', optionalAuth, async (req, res) => {
         query.category = category._id;
       }
     }
-    
+
     // Search
     if (req.query.search) {
       query.$text = { $search: req.query.search };
     }
-    
+
     // Tag filter
     if (req.query.tag) {
       query.tags = { $in: [req.query.tag] };
     }
-    
+
     // Author filter
     if (req.query.author) {
       query.author = req.query.author;
     }
-    
+
     // Sort options
     let sort = { publishedAt: -1 }; // Default: newest first
-    
+
     if (req.query.sort === 'oldest') {
       sort = { publishedAt: 1 };
     } else if (req.query.sort === 'views') {
@@ -59,7 +59,7 @@ router.get('/', optionalAuth, async (req, res) => {
     } else if (req.query.sort === 'likes') {
       sort = { 'likes.length': -1 };
     }
-    
+
     const posts = await Post.find(query)
       .populate('author', 'username firstName lastName avatar')
       .populate('category', 'name slug color')
@@ -68,10 +68,10 @@ router.get('/', optionalAuth, async (req, res) => {
       .sort(sort)
       .skip(skip)
       .limit(limit);
-    
+
     const total = await Post.countDocuments(query);
     const totalPages = Math.ceil(total / limit);
-    
+
     res.json({
       posts,
       pagination: {
@@ -94,17 +94,17 @@ router.get('/', optionalAuth, async (req, res) => {
 router.get('/featured', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 5;
-    
-    const posts = await Post.find({ 
+
+    const posts = await Post.find({
       status: 'published',
-      featured: true 
+      featured: true
     })
       .populate('author', 'username firstName lastName avatar')
       .populate('category', 'name slug color')
       .select('-content')
       .sort({ publishedAt: -1 })
       .limit(limit);
-    
+
     res.json(posts);
   } catch (error) {
     console.error(error);
@@ -117,28 +117,28 @@ router.get('/featured', async (req, res) => {
 // @access  Public
 router.get('/:slug', optionalAuth, async (req, res) => {
   try {
-    const post = await Post.findOne({ 
+    const post = await Post.findOne({
       slug: req.params.slug,
       status: 'published'
     })
       .populate('author', 'username firstName lastName bio avatar')
       .populate('category', 'name slug color')
       .populate('commentCount');
-    
+
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
-    
+
     // Increment view count
     post.views += 1;
     await post.save();
-    
+
     // Check if user has liked the post
     let hasLiked = false;
     if (req.user) {
       hasLiked = post.likes.some(like => like.user.toString() === req.user.id);
     }
-    
+
     res.json({
       ...post.toJSON(),
       hasLiked
@@ -181,7 +181,7 @@ router.post('/', protect, upload.single('featuredImage'), [
     }
 
     const { title, content, excerpt, category, tags, status, featured } = req.body;
-    
+
     // Verify category exists if provided
     let categoryDoc = null;
     if (category) {
@@ -190,7 +190,7 @@ router.post('/', protect, upload.single('featuredImage'), [
         return res.status(400).json({ message: 'Category not found' });
       }
     }
-    
+
     const postData = {
       title,
       content,
@@ -205,22 +205,22 @@ router.post('/', protect, upload.single('featuredImage'), [
     if (category) {
       postData.category = category;
     }
-    
+
     if (req.file) {
       postData.featuredImage = `/uploads/${req.file.filename}`;
     }
-    
+
     const post = await Post.create(postData);
-    
+
     // Update category post count if category exists
     if (categoryDoc) {
       await categoryDoc.updatePostCount();
     }
-    
+
     const populatedPost = await Post.findById(post._id)
       .populate('author', 'username firstName lastName')
       .populate('category', 'name slug color');
-    
+
     res.status(201).json({
       message: 'Post created successfully',
       post: populatedPost
@@ -265,18 +265,18 @@ router.put('/:id', protect, upload.single('featuredImage'), [
     }
 
     const post = await Post.findById(req.params.id);
-    
+
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
-    
+
     // Check if user is admin or the author
     if (req.user.role !== 'admin' && post.author.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to update this post' });
     }
-    
+
     const { title, content, excerpt, category, tags, status, featured } = req.body;
-    
+
     // Verify category exists if provided
     if (category) {
       const categoryDoc = await Category.findById(category);
@@ -284,7 +284,7 @@ router.put('/:id', protect, upload.single('featuredImage'), [
         return res.status(400).json({ message: 'Category not found' });
       }
     }
-    
+
     // Update fields
     if (title) post.title = title;
     if (content) post.content = content;
@@ -295,17 +295,17 @@ router.put('/:id', protect, upload.single('featuredImage'), [
     }
     if (status) post.status = status;
     if (featured !== undefined) post.featured = featured === 'true';
-    
+
     if (req.file) {
       post.featuredImage = `/uploads/${req.file.filename}`;
     }
-    
+
     await post.save();
-    
+
     const updatedPost = await Post.findById(post._id)
       .populate('author', 'username firstName lastName')
       .populate('category', 'name slug color');
-    
+
     res.json({
       message: 'Post updated successfully',
       post: updatedPost
@@ -322,24 +322,24 @@ router.put('/:id', protect, upload.single('featuredImage'), [
 router.delete('/:id', protect, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    
+
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
-    
+
     // Check if user is admin or the author
     if (req.user.role !== 'admin' && post.author.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Not authorized to delete this post' });
     }
-    
+
     await Post.findByIdAndDelete(req.params.id);
-    
+
     // Update category post count
     const category = await Category.findById(post.category);
     if (category) {
       await category.updatePostCount();
     }
-    
+
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {
     console.error(error);
@@ -353,15 +353,15 @@ router.delete('/:id', protect, async (req, res) => {
 router.post('/:id/like', protect, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-    
+
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
-    
+
     const likeIndex = post.likes.findIndex(
       like => like.user.toString() === req.user.id
     );
-    
+
     if (likeIndex > -1) {
       // Unlike
       post.likes.splice(likeIndex, 1);

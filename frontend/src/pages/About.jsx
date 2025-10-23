@@ -44,7 +44,7 @@ const About = () => {
             About <span className="gradient-text">My Blog</span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            Welcome to my personal blog platform! I'm passionate about sharing knowledge, 
+            Welcome to my personal blog platform! I'm passionate about sharing knowledge,
             experiences, and insights to help others learn and grow.
           </p>
         </div>
@@ -56,7 +56,7 @@ const About = () => {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-6">My Mission</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              To create valuable content that helps others learn, grow, and succeed. 
+              To create valuable content that helps others learn, grow, and succeed.
               This blog is my space to share insights, experiences, and knowledge with the world.
             </p>
           </div>
@@ -85,7 +85,7 @@ const About = () => {
             <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Impact</h2>
             <p className="text-xl text-gray-600">Growing community, growing knowledge</p>
           </div>
-          
+
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div className="p-6">
               <div className="text-4xl font-bold gradient-text mb-2">500+</div>
@@ -141,7 +141,7 @@ const About = () => {
             Join Our <span className="gradient-text">Community</span>
           </h2>
           <p className="text-xl text-gray-700 mb-8">
-            Start your journey with us today. Share your knowledge, learn from others, 
+            Start your journey with us today. Share your knowledge, learn from others,
             and be part of something amazing.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -9,27 +9,27 @@ const authReducer = (state, action) => {
     case 'AUTH_START':
       return { ...state, loading: true, error: null }
     case 'AUTH_SUCCESS':
-      return { 
-        ...state, 
-        loading: false, 
-        user: action.payload.user, 
+      return {
+        ...state,
+        loading: false,
+        user: action.payload.user,
         token: action.payload.token,
         isAuthenticated: true,
-        error: null 
+        error: null
       }
     case 'AUTH_FAILURE':
-      return { 
-        ...state, 
-        loading: false, 
-        user: null, 
+      return {
+        ...state,
+        loading: false,
+        user: null,
         token: null,
         isAuthenticated: false,
-        error: action.payload 
+        error: action.payload
       }
     case 'LOGOUT':
-      return { 
-        ...state, 
-        user: null, 
+      return {
+        ...state,
+        user: null,
         token: null,
         isAuthenticated: false,
         loading: false,
@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
               }
             }
           }
-          
+
           // Clear invalid session
           localStorage.removeItem('token')
           localStorage.removeItem('user')
@@ -105,28 +105,28 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       dispatch({ type: 'AUTH_START' })
-      
+
       // Try the API first
       try {
         const response = await api.post('/auth/login', credentials)
         const { token, user } = response.data
-        
+
         localStorage.setItem('token', token)
         localStorage.setItem('user', JSON.stringify(user))
-        
+
         dispatch({
           type: 'AUTH_SUCCESS',
           payload: { user, token }
         })
-        
+
         toast.success('Login successful!')
         return { success: true, user }
       } catch (apiError) {
         // If API fails, check for demo accounts or predefined accounts
         console.log('API login failed, checking demo accounts')
-        
+
         const demoUsers = JSON.parse(localStorage.getItem('demo_users') || '[]')
-        
+
         // Add predefined demo accounts
         const predefinedUsers = [
           {
@@ -150,29 +150,29 @@ export const AuthProvider = ({ children }) => {
             bio: 'Demo user account'
           }
         ]
-        
+
         const allUsers = [...predefinedUsers, ...demoUsers]
-        const user = allUsers.find(u => 
-          u.email === credentials.email && 
+        const user = allUsers.find(u =>
+          u.email === credentials.email &&
           (u.password === credentials.password || !u.password) // Allow login for demo accounts without password
         )
-        
+
         if (!user) {
           throw new Error('Invalid email or password')
         }
-        
+
         // Remove password from user object before storing
         const { password, ...userWithoutPassword } = user
         const demoToken = `demo_token_${user.id}`
-        
+
         localStorage.setItem('token', demoToken)
         localStorage.setItem('user', JSON.stringify(userWithoutPassword))
-        
+
         dispatch({
           type: 'AUTH_SUCCESS',
           payload: { user: userWithoutPassword, token: demoToken }
         })
-        
+
         toast.success('Login successful! (Demo mode - backend not connected)')
         return { success: true, user: userWithoutPassword }
       }
@@ -187,34 +187,34 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       dispatch({ type: 'AUTH_START' })
-      
+
       // Try the API first
       try {
         const response = await api.post('/auth/register', userData)
         const { token, user } = response.data
-        
+
         localStorage.setItem('token', token)
         localStorage.setItem('user', JSON.stringify(user))
-        
+
         dispatch({
           type: 'AUTH_SUCCESS',
           payload: { user, token }
         })
-        
+
         toast.success('Registration successful!')
         return { success: true, user }
       } catch (apiError) {
         // If API fails, create a demo account locally
         console.log('API registration failed, creating demo account locally')
-        
+
         // Check if user already exists locally
         const existingUsers = JSON.parse(localStorage.getItem('demo_users') || '[]')
         const userExists = existingUsers.find(u => u.email === userData.email)
-        
+
         if (userExists) {
           throw new Error('User with this email already exists')
         }
-        
+
         // Create demo user
         const demoUser = {
           id: Date.now().toString(),
@@ -227,20 +227,20 @@ export const AuthProvider = ({ children }) => {
           createdAt: new Date().toISOString(),
           avatar: null
         }
-        
+
         const demoToken = `demo_token_${demoUser.id}`
-        
+
         // Store demo user
         existingUsers.push(demoUser)
         localStorage.setItem('demo_users', JSON.stringify(existingUsers))
         localStorage.setItem('token', demoToken)
         localStorage.setItem('user', JSON.stringify(demoUser))
-        
+
         dispatch({
           type: 'AUTH_SUCCESS',
           payload: { user: demoUser, token: demoToken }
         })
-        
+
         toast.success('Account created successfully! (Demo mode - backend not connected)')
         return { success: true, user: demoUser }
       }

@@ -164,7 +164,7 @@ const CreatePost = () => {
                   {preview ? 'Edit' : 'Preview'}
                 </button>
               </div>
-              
+
               {preview ? (
                 <div className="min-h-[300px] p-4 border border-gray-300 rounded-md bg-gray-50 prose max-w-none">
                   <div dangerouslySetInnerHTML={{ __html: watchContent.replace(/\n/g, '<br>') }} />
@@ -206,7 +206,7 @@ const CreatePost = () => {
           {/* Settings */}
           <div className="bg-white rounded-lg shadow-md p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Post Settings</h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Category */}
               <div>

@@ -49,11 +49,17 @@ const Header = () => {
             >
               Contact
             </Link>
+            <Link
+              to="/community-content"
+              className="text-gray-700 hover:text-primary-600 px-3 py-2 text-sm font-medium transition-colors"
+            >
+              Community
+            </Link>
           </nav>
 
           {/* Search Bar */}
           <div className="hidden md:flex items-center max-w-xs">
-            <SearchBar 
+            <SearchBar
               placeholder="Search posts..."
               className="w-full"
               showResults={true}
@@ -71,7 +77,7 @@ const Header = () => {
                   <Plus className="h-4 w-4 mr-1" />
                   New Post
                 </Link>
-                
+
                 {/* User Menu */}
                 <div className="relative">
                   <button
@@ -100,7 +106,7 @@ const Header = () => {
                         <p className="text-sm font-medium text-gray-900">{user?.fullName}</p>
                         <p className="text-xs text-gray-500">{user?.email}</p>
                       </div>
-                      
+
                       <Link
                         to="/profile"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -109,16 +115,24 @@ const Header = () => {
                         <User className="h-4 w-4 mr-2" />
                         Profile
                       </Link>
-                      
+
                       <Link
                         to="/my-posts"
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
-                        <Plus className="h-4 w-4 mr-2" />
+                        <BookOpen className="h-4 w-4 mr-2" />
                         My Posts
                       </Link>
-                      
+                      <Link
+                        to="/upload-content"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Upload Content
+                      </Link>
+
                       {isAdmin && (
                         <>
                           <Link
@@ -137,9 +151,17 @@ const Header = () => {
                             <User className="h-4 w-4 mr-2" />
                             Admin Settings
                           </Link>
+                          <Link
+                            to="/admin/moderation"
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <Settings className="h-4 w-4 mr-2" />
+                            Content Moderation
+                          </Link>
                         </>
                       )}
-                      
+
                       <button
                         onClick={handleLogout}
                         className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -188,7 +210,7 @@ const Header = () => {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200">
               {/* Search on mobile */}
               <div className="mb-3">
-                <SearchBar 
+                <SearchBar
                   placeholder="Search posts..."
                   className="w-full"
                   showResults={true}

@@ -165,7 +165,7 @@ router.post('/login', [
 router.get('/me', protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     res.json({
       user: {
         id: user._id,
@@ -217,15 +217,15 @@ router.put('/profile', protect, [
     }
 
     const { firstName, lastName, bio } = req.body;
-    
+
     const user = await User.findById(req.user.id);
-    
+
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
     if (bio !== undefined) user.bio = bio;
-    
+
     await user.save();
-    
+
     res.json({
       message: 'Profile updated successfully',
       user: {

@@ -59,9 +59,9 @@ const BlogPost = () => {
   const handleShare = (platform) => {
     const url = window.location.href
     const title = post.title
-    
+
     let shareUrl = ''
-    
+
     switch (platform) {
       case 'twitter':
         shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`
@@ -80,7 +80,7 @@ const BlogPost = () => {
       default:
         return
     }
-    
+
     window.open(shareUrl, '_blank', 'width=600,height=400')
     setShowShareMenu(false)
   }
@@ -109,7 +109,7 @@ const BlogPost = () => {
         <header className="mb-8">
           {/* Category */}
           <div className="mb-4">
-            <span 
+            <span
               className="inline-block px-3 py-1 text-sm font-medium text-white rounded-full"
               style={{ backgroundColor: post.category?.color }}
             >
@@ -165,11 +165,10 @@ const BlogPost = () => {
               <button
                 onClick={handleLike}
                 disabled={likeMutation.isLoading}
-                className={`flex items-center space-x-1 px-3 py-2 rounded-lg transition-colors ${
-                  post.hasLiked
+                className={`flex items-center space-x-1 px-3 py-2 rounded-lg transition-colors ${post.hasLiked
                     ? 'bg-red-100 text-red-600 hover:bg-red-200'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
+                  }`}
               >
                 <Heart
                   className={`h-5 w-5 ${post.hasLiked ? 'fill-current' : ''}`}
@@ -277,8 +276,8 @@ const BlogPost = () => {
       <CommentSection postId={post._id} />
 
       {/* Related Posts */}
-      <RelatedPosts 
-        currentPostId={post._id} 
+      <RelatedPosts
+        currentPostId={post._id}
         categoryId={post.category?._id}
         tags={post.tags}
       />

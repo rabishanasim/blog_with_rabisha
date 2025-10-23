@@ -1,11 +1,11 @@
 import React from 'react'
 import { useQuery } from 'react-query'
-import { 
-  Users, 
-  FileText, 
-  MessageCircle, 
-  Eye, 
-  Heart, 
+import {
+  Users,
+  FileText,
+  MessageCircle,
+  Eye,
+  Heart,
   TrendingUp,
   Calendar,
   Activity
@@ -24,7 +24,7 @@ const Dashboard = () => {
         api.get('/users/stats/overview'),
         api.get('/comments?limit=1')
       ])
-      
+
       return {
         posts: postsRes.data,
         users: usersRes.data,
@@ -117,14 +117,14 @@ const Dashboard = () => {
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">Recent Posts</h2>
-                <a 
-                  href="/dashboard/posts" 
+                <a
+                  href="/dashboard/posts"
                   className="text-primary-600 hover:text-primary-500 text-sm font-medium"
                 >
                   View all
                 </a>
               </div>
-              
+
               {recentPosts?.posts ? (
                 <div className="space-y-4">
                   {recentPosts.posts.map((post) => (
@@ -137,13 +137,12 @@ const Dashboard = () => {
                           <Calendar className="h-3 w-3 mr-1" />
                           {format(new Date(post.createdAt), 'MMM dd, yyyy')}
                           <span className="mx-2">•</span>
-                          <span className={`px-2 py-1 rounded text-xs ${
-                            post.status === 'published' 
+                          <span className={`px-2 py-1 rounded text-xs ${post.status === 'published'
                               ? 'bg-green-100 text-green-800'
                               : post.status === 'draft'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}>
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}>
                             {post.status}
                           </span>
                         </div>
